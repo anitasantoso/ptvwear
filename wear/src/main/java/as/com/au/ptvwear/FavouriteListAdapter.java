@@ -9,27 +9,28 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import as.com.au.common.model.FaveStop;
 import as.com.au.common.model.Stop;
 
 /**
  * Created by Anita on 17/01/2015.
  */
 class FavouriteListAdapter extends WearableListView.Adapter {
-    List<Stop> items;
+    List<FaveStop> items;
     private final Context mContext;
     private final LayoutInflater mInflater;
 
-    public FavouriteListAdapter(Context context, List<Stop> items) {
+    public FavouriteListAdapter(Context context, List<FaveStop> items) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         this.items = items;
     }
 
-    public void setItems(List<Stop> items) {
+    public void setItems(List<FaveStop> items) {
         this.items = items;
     }
 
-    public List<Stop> getItems() {
+    public List<FaveStop> getItems() {
         return items;
     }
 
@@ -62,7 +63,7 @@ class FavouriteListAdapter extends WearableListView.Adapter {
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
         TextView view = itemHolder.textView;
 
-        Stop stop = items.get(position);
+        Stop stop = items.get(position).getStop();
         view.setText(stop.getLocationName());
 
         holder.itemView.setTag(position);

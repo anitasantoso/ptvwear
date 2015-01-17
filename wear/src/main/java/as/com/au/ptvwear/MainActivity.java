@@ -15,7 +15,7 @@ import java.util.List;
 
 import as.com.au.common.Const;
 import as.com.au.common.DataLayerClient;
-import as.com.au.common.model.Stop;
+import as.com.au.common.model.FaveStop;
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends Activity {
@@ -41,9 +41,9 @@ public class MainActivity extends Activity {
             public void onClick(WearableListView.ViewHolder viewHolder) {
                 int position = (int)viewHolder.itemView.getTag();
                 if(listAdapter != null) {
-                    Stop stop = listAdapter.items.get(position);
+                    FaveStop fave = listAdapter.items.get(position);
                     Intent intent = new Intent(MainActivity.this, TimetableActivity.class);
-                    intent.putExtra(Const.EXTRA_STOP_ID, stop.getStopId());
+                    intent.putExtra(Const.EXTRA_FAVE_ID, fave.getFaveId());
                     startActivity(intent);
                 }
             }
@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
                 null);
     }
 
-    public void onEventMainThread(final DataLayerClient.DataItemChangedEvent<List<Stop>> event) {
+    public void onEventMainThread(final DataLayerClient.DataItemChangedEvent<List<FaveStop>> event) {
         statusTextView.setVisibility(View.GONE);
         button.setVisibility(View.GONE);
         stopsListView.setVisibility(View.VISIBLE);

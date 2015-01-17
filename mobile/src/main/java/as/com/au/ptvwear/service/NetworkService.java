@@ -101,10 +101,10 @@ public class NetworkService {
         });
     }
 
-    public void getNextDeparture(int transportTypeIndex, int stopId, final ResponseHandler<List<Departure>> handler) {
+    public void getNextDeparture(final Stop stop, final ResponseHandler<List<Departure>> handler) {
 
         // limit to one next departure
-        String signedUrl = generateSignedUrl(String.format(URI_DEPARTURE, transportTypeIndex, stopId, 1));
+        String signedUrl = generateSignedUrl(String.format(URI_DEPARTURE, stop.getTransportType().getIndex(), stop.getStopId(), 1));
         client.get(signedUrl, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -124,7 +124,7 @@ public class NetworkService {
                         String timeStr = obj.getString("time_timetable_utc");
 
                         Line line = new Line(lineId, lineName, directionId, directionName);
-                        Departure dep = new Departure(line, timeStr);
+                        Departure dep = new Departure(stop, line, timeStr);
                         departures.add(dep);
                     }
                 } catch (Exception e) {

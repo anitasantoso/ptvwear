@@ -8,7 +8,7 @@ import com.googlecode.androidannotations.api.Scope;
 import java.util.List;
 
 import as.com.au.common.JSONSerializer;
-import as.com.au.common.model.Stop;
+import as.com.au.common.model.FaveStop;
 import as.com.au.ptvwear.prefs.FavePrefs_;
 
 /**
@@ -19,26 +19,26 @@ public class FaveMgr {
 
     @Pref
     FavePrefs_ prefs;
-    JSONSerializer<Stop> serializer = new JSONSerializer<Stop>();
+    JSONSerializer<FaveStop> serializer = new JSONSerializer<FaveStop>();
 
-    public void remove(Stop stop) {
-        List<Stop> faves = getFaves();
-        faves.remove(stop);
+    public void remove(FaveStop fave) {
+        List<FaveStop> faves = getFaves();
+        faves.remove(fave);
         setFave(faves);
     }
 
-    public void add(Stop stop) {
-        List<Stop> faves = getFaves();
-        faves.add(stop);
+    public void add(FaveStop fave) {
+        List<FaveStop> faves = getFaves();
+        faves.add(fave);
         setFave(faves);
     }
 
-    public boolean isFave(Stop stop) {
-        return getFaves().contains(stop);
-    }
+//    public boolean isFave(FaveStop stop) {
+//        return getFaves().contains(stop);
+//    }
 
-    private void setFave(List<Stop> faves) {
-        String jsonArrStr = serializer.deserialize(faves, new TypeToken<List<Stop>>(){}.getType());
+    private void setFave(List<FaveStop> faves) {
+        String jsonArrStr = serializer.deserialize(faves, new TypeToken<List<FaveStop>>(){}.getType());
         prefs.edit().faveStops().put(jsonArrStr).apply();
     }
 
@@ -46,15 +46,15 @@ public class FaveMgr {
         return prefs.faveStops().get();
     }
 
-    public List<Stop> getFaves() {
+    public List<FaveStop> getFaves() {
         String favesStr = prefs.faveStops().get();
-        return serializer.serialize(favesStr, new TypeToken<List<Stop>>(){}.getType());
+        return serializer.serialize(favesStr, new TypeToken<List<FaveStop>>(){}.getType());
     }
 
-    public Stop stopById(int stopId) {
-        for(Stop stop : getFaves()) {
-            if(stop.getStopId() == stopId) {
-                return stop;
+    public FaveStop faveById(String faveId) {
+        for(FaveStop fave : getFaves()) {
+            if(fave.getFaveId().equals(faveId)) {
+                return fave;
             }
         }
         return null;

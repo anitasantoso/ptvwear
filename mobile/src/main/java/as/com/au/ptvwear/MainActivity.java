@@ -26,6 +26,7 @@ import as.com.au.common.Const;
 import as.com.au.common.DataLayerClient;
 import as.com.au.common.JSONSerializer;
 import as.com.au.common.model.Departure;
+import as.com.au.common.model.FaveStop;
 import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.adapter.FaveStopsListAdapter;
 import as.com.au.ptvwear.service.NetworkService;
@@ -68,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Stop stop = (Stop) listAdapter.getItem(position);
-                NetworkService.getInstance().getNextDeparture(stop.getTransportType().getIndex(), stop.getStopId(),
+                NetworkService.getInstance().getNextDeparture(stop,
                         new ResponseHandler<List<Departure>>() {
 
                             @Override
@@ -106,8 +107,8 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
     public void onResume() {
         super.onResume();
 
-        List<Stop> stops = faveMgr.getFaves();
-        boolean isEmpty = stops.isEmpty();
+        List<FaveStop> faves = faveMgr.getFaves();
+        boolean isEmpty = faves == null || faves.isEmpty();
         emptyTextView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
         faveListView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
 
@@ -144,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
     }
 
     private void reloadListView() {
-        listAdapter.setStops(faveMgr.getFaves());
+        listAdapter.setItems(faveMgr.getFaves());
         listAdapter.notifyDataSetChanged();
     }
 
@@ -157,7 +158,7 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
 
     static int count = 0;
 
-    // TODO move this into service
+    // TODO move this into service class
     public void onEventMainThread(DataLayerClient.MessageReceivedEvent event) {
 
         // show favourites
@@ -172,12 +173,12 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
 
         } else if (event.path.equals(Const.PATH_FETCH_DEPARTURE) && event.payload != null) {
 
-            String stopId = event.payload;
-            Stop stop = faveMgr.stopById(Integer.parseInt(stopId));
-            if (stop == null) {
+            String faveId = event.payload;
+            FaveStop fave = faveMgr.faveById(faveId);
+            if (fave == null) {
                 return;
             }
-            NetworkService.getInstance().getNextDeparture(stop.getTransportType().getIndex(), stop.getStopId(),
+            NetworkService.getInstance().getNextDeparture(fave.getStop(),
                     new ResponseHandler<List<Departure>>() {
                         @Override
                         public void onSuccess(List<Departure> result) {

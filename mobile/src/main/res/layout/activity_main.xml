@@ -9,10 +9,11 @@
         android:layout_height="wrap_content"
         android:padding="50dp"
         android:layout_centerInParent="true"
+        android:textSize="16sp"
         android:id="@+id/tv_empty"
         android:visibility="gone"
         android:gravity="center"
-        android:text='You have no favourited stops. Click \"ADD\" to add one.' />
+        android:text='You have no favourite stops.\nClick \"ADD\" to add one.' />
 
     <ListView
         android:layout_width="match_parent"

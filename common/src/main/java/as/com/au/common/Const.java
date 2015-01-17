@@ -14,6 +14,6 @@ public class Const {
     public static final String KEY_DEPARTURE = "departure";
     public static final String KEY_COUNT = "count";
 
-    public static final String EXTRA_STOP_ID = "stop_id";
+    public static final String EXTRA_FAVE_ID = "fave_id";
 
 }

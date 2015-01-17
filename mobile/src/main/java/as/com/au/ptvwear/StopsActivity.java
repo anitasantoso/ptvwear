@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import as.com.au.common.model.Stop;
+import as.com.au.common.model.TransportType;
 import as.com.au.ptvwear.adapter.StopsListAdapter;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
@@ -42,7 +43,7 @@ public class StopsActivity extends ActionBarActivity {
                 // pass Stop object
                 EventBus.getDefault().postSticky(listAdapter.getItem(position));
 
-                Intent intent = new Intent(StopsActivity.this, StopDetailsActivity.class);
+                Intent intent = new Intent(StopsActivity.this, StopDetailsActivity_.class);
                 startActivity(intent);
             }
         });
@@ -56,15 +57,15 @@ public class StopsActivity extends ActionBarActivity {
         // TODO Show spinner
         // home -37.865300, 144.994785
         // flinders st -37.818178, 144.966880
-        NetworkService.getInstance().getNearbyStops(-37.818178, 144.966880, new ResponseHandler<List<Stop>>() {
+        NetworkService.getInstance().getNearbyStops(-37.865300, 144.994785, new ResponseHandler<List<Stop>>() {
             @Override
             public void onSuccess(List<Stop> result) {
 
                 Collections.sort(result, new Comparator<Stop>() {
                     @Override
                     public int compare(Stop lhs, Stop rhs) {
-                        return lhs.getTransportType() == Stop.TransportType.Train ? -1 :
-                                lhs.getTransportType() == Stop.TransportType.Tram ? 0 : 1;
+                        return lhs.getTransportType() == TransportType.Train ? -1 :
+                                lhs.getTransportType() == TransportType.Tram ? 0 : 1;
                     }
                 });
                 // update list

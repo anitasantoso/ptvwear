@@ -14,9 +14,10 @@ public class Departure {
      */
     private Line line;
     private String utcTime;
+    private Stop stop;
 
-
-    public Departure(Line line, String utcTime) {
+    public Departure(Stop stop, Line line, String utcTime) {
+        this.stop = stop;
         this.line = line;
         this.utcTime = utcTime;
     }
@@ -37,5 +38,9 @@ public class Departure {
     public String toString() {
         return new StringBuffer().append(getLine().toString()).append(" - ")
                 .append(DateTimeFormat.forStyle("MM").print(getTime())).toString();
+    }
+
+    public Stop getStop() {
+        return stop;
     }
 }

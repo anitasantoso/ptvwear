@@ -43,15 +43,11 @@ public class StopsListAdapter extends BaseAdapter {
         return position;
     }
 
-    public int getListItemResource() {
-        return R.layout.list_item_stop_chevron;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if(convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(getListItemResource(), null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_stop_chevron, null);
         }
         TextView typeTxtView = (TextView)convertView.findViewById(R.id.tv_transport_type);
         TextView locTxtView = (TextView)convertView.findViewById(R.id.tv_location_name);

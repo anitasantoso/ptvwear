@@ -5,32 +5,6 @@ package as.com.au.common.model;
  */
 public class Stop {
 
-    public static enum TransportType {
-        Train("train"), Tram("tram"), Bus("bus"), VLine("vline"), NightRider("nightrider"), Unknown(""), ;
-
-        String desc;
-        TransportType(String desc) {
-            this.desc = desc;
-        }
-
-        public int getIndex() {
-            return ordinal();
-        }
-
-        @Override
-        public String toString() {
-            return desc;
-        }
-    }
-
-    private int stopId;
-    private String distance;
-    private double lon;
-    private String locationName;
-    private String transportType;
-    private String suburb;
-
-    public Stop() {}
     /**
      *  {
      "type": "stop",
@@ -45,18 +19,26 @@ public class Stop {
      }
      }
      */
+    private int stopId;
+//    private String distance;
+//    private double lon;
+    private String locationName;
+    private String transportType;
+    private String suburb;
+
+    public Stop() {}
 
     public int getStopId() {
         return stopId;
     }
 
-    public String getDistance() {
-        return distance;
-    }
-
-    public double getLon() {
-        return lon;
-    }
+//    public String getDistance() {
+//        return distance;
+//    }
+//
+//    public double getLon() {
+//        return lon;
+//    }
 
     public String getLocationName() {
         return locationName;
@@ -68,7 +50,7 @@ public class Stop {
 
     public TransportType getTransportType() {
         for(TransportType type : TransportType.values()) {
-            if(type.desc.equals(this.transportType)) {
+            if(type.identifier.equals(this.transportType)) {
                 return type;
             }
         }
