@@ -21,7 +21,7 @@
         android:theme="@android:style/Theme.DeviceDefault" >
         <activity
             android:name="as.com.au.ptvwear.MainActivity"
-            android:label="@string/app_name" >
+            android:label="PTV Timetable" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

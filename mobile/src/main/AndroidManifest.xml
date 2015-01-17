@@ -15,7 +15,7 @@
 
         <activity
             android:name="as.com.au.ptvwear.MainActivity_"
-            android:label="PTVWear - Favourites" >
+            android:label="PTWear" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
