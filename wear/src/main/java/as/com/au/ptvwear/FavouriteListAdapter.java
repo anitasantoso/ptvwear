@@ -5,12 +5,13 @@ import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import as.com.au.common.model.FaveStop;
-import as.com.au.common.model.Stop;
+import as.com.au.common.model.TransportType;
 
 /**
  * Created by Anita on 17/01/2015.
@@ -36,11 +37,14 @@ class FavouriteListAdapter extends WearableListView.Adapter {
 
     // Provide a reference to the type of views you're using
     static class ItemViewHolder extends WearableListView.ViewHolder {
-        private TextView textView;
+        private TextView textView, descTextView;
+        private ImageView imgView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.text_view);
+            descTextView = (TextView) itemView.findViewById(R.id.desc_text_view);
+            imgView = (ImageView) itemView.findViewById(R.id.icon_img_view);
         }
     }
 
@@ -61,10 +65,27 @@ class FavouriteListAdapter extends WearableListView.Adapter {
                                  int position) {
 
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
-        TextView view = itemHolder.textView;
 
-        Stop stop = items.get(position).getStop();
-        view.setText(stop.getLocationName());
+        FaveStop fave = items.get(position);
+        TransportType type = fave.getStop().getTransportType();
+
+        int resId;
+        switch (type) {
+            case Train:
+                resId = R.drawable.ic_train;
+                break;
+            case Tram:
+                resId = R.drawable.ic_tram;
+                break;
+            case Bus:
+                resId = R.drawable.ic_bus;
+                break;
+            default:
+                resId = R.drawable.ic_train;
+        }
+        itemHolder.imgView.setImageDrawable(mContext.getResources().getDrawable(resId));
+        itemHolder.textView.setText(fave.getStop().getLocationName());
+        itemHolder.descTextView.setText("To " + fave.getLine().getDirectionName());
 
         holder.itemView.setTag(position);
     }

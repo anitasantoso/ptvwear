@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:layout_gravity="top">
 
-    <TextView
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentLeft="true"
+        android:scaleType="centerInside"
+        android:id="@+id/icon_img_view"
+        android:src="@drawable/ic_train" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:id="@+id/text_view"/>
-</LinearLayout>
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/icon_img_view"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ptv_green"
+            android:textSize="16sp"
+            android:id="@+id/text_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:id="@+id/desc_text_view" />
+    </LinearLayout>
+</RelativeLayout>

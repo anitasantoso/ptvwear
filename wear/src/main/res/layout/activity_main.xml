@@ -2,7 +2,7 @@
 <android.support.wearable.view.BoxInsetLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/ptv_gray"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
@@ -12,10 +12,17 @@
         android:layout_width="match_parent"
         app:layout_box="left|bottom|right">
 
+        <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:src="@drawable/background1"-->
+            <!--android:scaleType="centerInside"/>-->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/status_tv"
+            android:textColor="@color/ptv_green"
             android:text="Connecting..."
             android:gravity="center"
             />
@@ -23,7 +30,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send Message"
+            android:text="Reload"
             android:id="@+id/button"/>
 
         <android.support.wearable.view.WearableListView

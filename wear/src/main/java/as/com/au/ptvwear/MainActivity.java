@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
                 int position = (int)viewHolder.itemView.getTag();
                 if(listAdapter != null) {
                     FaveStop fave = listAdapter.items.get(position);
-                    Intent intent = new Intent(MainActivity.this, TimetableActivity.class);
+                    Intent intent = new Intent(MainActivity.this, TimetablePagerActivity.class);
                     intent.putExtra(Const.EXTRA_FAVE_ID, fave.getFaveId());
                     startActivity(intent);
                 }

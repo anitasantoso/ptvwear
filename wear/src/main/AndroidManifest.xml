@@ -32,6 +32,15 @@
             android:name="as.com.au.ptvwear.TimetableActivity"
             android:label="@string/title_activity_timetable" >
         </activity>
+        <activity
+            android:name="as.com.au.ptvwear.TimetablePagerActivity"
+            android:label="@string/title_activity_timetable_pager" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

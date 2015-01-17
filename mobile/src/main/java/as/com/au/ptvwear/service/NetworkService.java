@@ -78,6 +78,7 @@ public class NetworkService {
         });
     }
 
+    // TODO only support tram and train for now!!
     public void getNearbyStops(double lat, double lon, final ResponseHandler<List<Stop>> handler) {
         String signedUrl = generateSignedUrl(String.format(URI_NEARBY_STOPS, String.valueOf(lat), String.valueOf(lon)));
 
