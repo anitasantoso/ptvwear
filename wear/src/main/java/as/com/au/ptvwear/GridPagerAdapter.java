@@ -23,32 +23,42 @@ public class GridPagerAdapter extends FragmentGridPagerAdapter {
     private final Context mContext;
     List<Departure> items;
 
-    public GridPagerAdapter(Context ctx, FragmentManager fm, List<Departure> items) {
+    public GridPagerAdapter(Context ctx, FragmentManager fm) {
         super(fm);
         mContext = ctx;
+    }
+
+    public void setItems(List<Departure> items) {
         this.items = items;
     }
 
     @Override
     public Fragment getFragment(int row, int col) {
 
-        Departure dep = items.get(0);
-        DateTime time = dep.getTime();
-        Minutes waitTimeInMins = Minutes.minutesBetween(new DateTime(), time);
+        String title = null, description = null;
+        if(items != null && items.size() > col) {
+            Departure dep = items.get(col);
+            DateTime time = dep.getTime();
 
-        String title = String.format("Next %s", dep.getStop().getTransportType().toString());
+            // TODO if more than a day
+            Minutes waitTimeInMins = Minutes.minutesBetween(new DateTime(), time);
 
-        StringBuffer desc = new StringBuffer();
-        desc.append(DateTimeFormat.forPattern("EEE").print(time))
-                .append(" ")
-                .append(DateTimeFormat.forPattern("h:mm a").print(time))
-                .append("\n")
-                .append(String.format("(in %s mins)",
-                        String.valueOf(waitTimeInMins.getMinutes())));
+            title = String.format("Next %s", dep.getStop().getTransportType().toString());
 
-        CardFragment fragment = CardFragment.create(title, desc.toString(), R.drawable.ic_launcher);
+            StringBuffer desc = new StringBuffer();
+            desc.append(DateTimeFormat.forPattern("EEEE").print(time))
+                    .append(" ")
+                    .append(DateTimeFormat.forPattern("h:mm a").print(time))
+                    .append("\n")
+                    .append(String.format("(in %s mins)",
+                            String.valueOf(waitTimeInMins.getMinutes())));
+            description = desc.toString();
+        } else {
+            title = "Next";
+            description = "Please wait...";
+        }
 
-        // Advanced settings
+        CardFragment fragment = CardFragment.create(title, description, R.drawable.ic_launcher);
         fragment.setCardGravity(Gravity.BOTTOM);
         fragment.setExpansionEnabled(false);
         return fragment;
@@ -66,7 +76,7 @@ public class GridPagerAdapter extends FragmentGridPagerAdapter {
 
     @Override
     public int getColumnCount(int rowNum) {
-        return 1;
+        return items != null? items.size() : 1;
     }
 }
 

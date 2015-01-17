@@ -16,13 +16,14 @@ import de.greenrobot.event.EventBus;
 public class TimetablePagerActivity extends Activity {
 
     GridViewPager pager;
+    GridPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timetable_pager);
         pager = (GridViewPager)findViewById(R.id.pager);
-
+        pager.setAdapter(pagerAdapter = new GridPagerAdapter(this, getFragmentManager()));
         String faveId = getIntent().getExtras().getString(Const.EXTRA_FAVE_ID);
 
         Wearable.MessageApi.sendMessage(DataLayerClient.getInstance().getClient(), DataLayerClient.getInstance().getNodeId(),
@@ -46,8 +47,8 @@ public class TimetablePagerActivity extends Activity {
         List<Departure> departures = event.item;
 
         if(!departures.isEmpty()) {
-//            Departure dep = departures.get(0);
-            pager.setAdapter(new GridPagerAdapter(this, getFragmentManager(), departures));
+            pagerAdapter.setItems(departures);
+            pagerAdapter.notifyDataSetChanged();
         }
     }
 }
