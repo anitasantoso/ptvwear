@@ -1,4 +1,4 @@
-package as.com.au.ptvwear.model;
+package as.com.au.common.model;
 
 /**
  * Created by Anita on 16/01/2015.

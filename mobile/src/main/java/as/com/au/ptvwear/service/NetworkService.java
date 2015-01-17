@@ -9,8 +9,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,8 +19,8 @@ import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import as.com.au.ptvwear.model.Departure;
-import as.com.au.ptvwear.model.Stop;
+import as.com.au.common.model.Departure;
+import as.com.au.common.model.Stop;
 
 /**
  * Created by Anita on 16/01/2015.
@@ -116,9 +114,7 @@ public class NetworkService {
                         JSONObject obj = arr.getJSONObject(i);
                         String directionName = obj.getJSONObject("platform").getJSONObject("direction").getString("direction_name");
                         String timeStr = obj.getString("time_timetable_utc");
-                        DateTime time = ISODateTimeFormat.dateTimeParser().parseDateTime(timeStr);
-
-                        Departure dep = new Departure(directionName, time);
+                        Departure dep = new Departure(directionName, timeStr);
                         departures.add(dep);
                     }
                 } catch (Exception e) {

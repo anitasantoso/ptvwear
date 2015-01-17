@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import as.com.au.ptvwear.model.Departure;
-import as.com.au.ptvwear.model.Stop;
+import as.com.au.common.model.Departure;
+import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 

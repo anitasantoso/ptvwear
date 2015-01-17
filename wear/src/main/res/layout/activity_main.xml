@@ -12,10 +12,25 @@
         android:layout_width="match_parent"
         app:layout_box="left|bottom|right">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/status_tv"
+            android:text="Connecting..."
+            android:gravity="center"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Message"
+            android:id="@+id/button"/>
+
         <android.support.wearable.view.WearableListView
             android:id="@+id/wearable_list"
             android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:visibility="gone">
         </android.support.wearable.view.WearableListView>
 
     </FrameLayout>

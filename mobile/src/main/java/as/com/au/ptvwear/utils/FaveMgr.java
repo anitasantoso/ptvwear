@@ -1,16 +1,14 @@
 package as.com.au.ptvwear.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 import com.googlecode.androidannotations.api.Scope;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import as.com.au.ptvwear.model.Stop;
+import as.com.au.common.JSONSerializer;
+import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.prefs.FavePrefs_;
 
 /**
@@ -21,6 +19,7 @@ public class FaveMgr {
 
     @Pref
     FavePrefs_ prefs;
+    JSONSerializer<Stop> serializer = new JSONSerializer<Stop>();
 
     public void remove(Stop stop) {
         List<Stop> faves = getFaves();
@@ -39,20 +38,25 @@ public class FaveMgr {
     }
 
     private void setFave(List<Stop> faves) {
-        Gson gson = new Gson();
-        JsonElement elm = gson.toJsonTree(faves, new TypeToken<List<Stop>>(){}.getType());
-        String jsonArrStr = elm.getAsJsonArray().toString();
-
+        String jsonArrStr = serializer.deserialize(faves, new TypeToken<List<Stop>>(){}.getType());
         prefs.edit().faveStops().put(jsonArrStr).apply();
+    }
+
+    public String favesAsJsonString() {
+        return prefs.faveStops().get();
     }
 
     public List<Stop> getFaves() {
         String favesStr = prefs.faveStops().get();
-        List<Stop> faves = new ArrayList<Stop>();
-        if(!favesStr.isEmpty()) {
-            Gson gson = new Gson();
-            faves = gson.fromJson(favesStr, new TypeToken<List<Stop>>(){}.getType());
+        return serializer.serialize(favesStr, new TypeToken<List<Stop>>(){}.getType());
+    }
+
+    public Stop stopById(int stopId) {
+        for(Stop stop : getFaves()) {
+            if(stop.getStopId() == stopId) {
+                return stop;
+            }
         }
-        return faves;
+        return null;
     }
 }

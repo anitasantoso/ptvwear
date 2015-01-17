@@ -10,6 +10,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+import com.google.gson.reflect.TypeToken;
+import com.googlecode.androidannotations.annotations.AfterInject;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EActivity;
@@ -17,18 +22,24 @@ import com.googlecode.androidannotations.annotations.ViewById;
 
 import java.util.List;
 
+import as.com.au.common.Const;
+import as.com.au.common.DataLayerClient;
+import as.com.au.common.JSONSerializer;
+import as.com.au.common.model.Departure;
+import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.adapter.StopsListAdapter;
-import as.com.au.ptvwear.model.Departure;
-import as.com.au.ptvwear.model.Stop;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 import as.com.au.ptvwear.utils.AlertUtils;
 import as.com.au.ptvwear.utils.FaveMgr;
+import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends ActionBarActivity implements StopsListAdapter.DatasetChangedDelegate<Stop> {
 
-    public static final int REQ_CODE_VIEW_STOPS = 100;
+    private static final String TAG = "MainActivity";
+    private static final int REQUEST_VIEW_STOPS = 100;
+    private static final int REQUEST_RESOLVE_ERROR = 1000;
 
     @ViewById(R.id.fave_list_view)
     ListView faveListView;
@@ -40,6 +51,13 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
     FaveMgr faveMgr;
 
     StopsListAdapter listAdapter;
+    DataLayerClient client;
+
+    @AfterInject
+    void init() {
+        client = new DataLayerClient(this);
+        client.connect();
+    }
 
     @AfterViews
     void initViews() {
@@ -49,14 +67,14 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Stop stop = (Stop)listAdapter.getItem(position);
+                Stop stop = (Stop) listAdapter.getItem(position);
                 NetworkService.getInstance().getNextDeparture(stop, new ResponseHandler<List<Departure>>() {
-                    
+
                     @Override
                     public void onSuccess(List<Departure> result) {
 
                         StringBuffer desc = new StringBuffer();
-                        for(Departure dep : result) {
+                        for (Departure dep : result) {
                             desc.append(dep.toString()).append("\n\n");
                         }
                         AlertUtils.showError(MainActivity.this, desc.toString());
@@ -72,15 +90,27 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
         List<Stop> stops = faveMgr.getFaves();
         boolean isEmpty = stops.isEmpty();
-        emptyTextView.setVisibility(isEmpty? View.VISIBLE : View.GONE);
-        faveListView.setVisibility(isEmpty? View.GONE : View.VISIBLE);
+        emptyTextView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        faveListView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
 
-        if(!isEmpty) {
+        if (!isEmpty) {
             reloadListView();
         }
     }
@@ -95,8 +125,8 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if(id == R.id.action_add) {
-            startActivityForResult(new Intent(this, StopsActivity_.class), REQ_CODE_VIEW_STOPS);
+        if (id == R.id.action_add) {
+            startActivityForResult(new Intent(this, StopsActivity_.class), REQUEST_VIEW_STOPS);
         }
 
         return super.onOptionsItemSelected(item);
@@ -118,9 +148,53 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
     }
 
     @Override
-    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQ_CODE_VIEW_STOPS && resultCode == Activity.RESULT_OK) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_VIEW_STOPS && resultCode == Activity.RESULT_OK) {
             reloadListView();
+        }
+    }
+
+    static int count = 0;
+
+    // TODO move this into service
+    public void onEventMainThread(DataLayerClient.MessageReceivedEvent event) {
+
+        // show favourites
+        if (event.path.equals(Const.PATH_FETCH_FAVOURITES)) {
+
+            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Const.PATH_FAVOURITES);
+            putDataMapRequest.getDataMap().putString(Const.KEY_FAVOURITES, faveMgr.favesAsJsonString());
+            putDataMapRequest.getDataMap().putInt(Const.KEY_COUNT, count++); // trigger changes
+
+            PutDataRequest request = putDataMapRequest.asPutDataRequest();
+            Wearable.DataApi.putDataItem(client.getClient(), request);
+
+        } else if (event.path.equals(Const.PATH_FETCH_DEPARTURE) && event.payload != null) {
+
+            String stopId = event.payload;
+            Stop stop = faveMgr.stopById(Integer.parseInt(stopId));
+            if(stop == null) {
+                return;
+            }
+            NetworkService.getInstance().getNextDeparture(stop, new ResponseHandler<List<Departure>>() {
+                @Override
+                public void onSuccess(List<Departure> result) {
+                    // now back at the watch
+
+                    PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Const.PATH_DEPARTURE);
+                    putDataMapRequest.getDataMap().putString(Const.KEY_DEPARTURE, new JSONSerializer<Departure>()
+                            .deserialize(result, new TypeToken<List<Departure>>(){}.getType()));
+                    putDataMapRequest.getDataMap().putInt(Const.KEY_COUNT, count++); // trigger changes?
+
+                    PutDataRequest request = putDataMapRequest.asPutDataRequest();
+                    Wearable.DataApi.putDataItem(client.getClient(), request);
+                }
+
+                @Override
+                public void onError(String error) {
+
+                }
+            });
         }
     }
 }

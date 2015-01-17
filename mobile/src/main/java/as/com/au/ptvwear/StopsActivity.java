@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import as.com.au.ptvwear.adapter.StopsListAdapter;
-import as.com.au.ptvwear.model.Stop;
+import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 import as.com.au.ptvwear.utils.AlertUtils;

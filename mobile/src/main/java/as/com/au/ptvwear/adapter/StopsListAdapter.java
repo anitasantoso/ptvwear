@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import as.com.au.ptvwear.R;
-import as.com.au.ptvwear.model.Stop;
+import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.utils.FaveMgr_;
 
 /**
