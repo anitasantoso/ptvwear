@@ -6,7 +6,7 @@ package as.com.au.ptvwear.model;
 public class Stop {
 
     public static enum TransportType {
-        Train("train"), Tram("tram"), Bus("bus"), Unknown("");
+        Train("train"), Tram("tram"), Bus("bus"), Unknown(""), ;
 
         String desc;
         TransportType(String desc) {
@@ -15,6 +15,11 @@ public class Stop {
 
         public int getIndex() {
             return ordinal();
+        }
+
+        @Override
+        public String toString() {
+            return desc;
         }
     }
 
@@ -68,6 +73,11 @@ public class Stop {
             }
         }
         return TransportType.Unknown;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Stop && getStopId() == ((Stop)o).getStopId();
     }
 
     @Override

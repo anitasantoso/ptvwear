@@ -3,6 +3,7 @@
     package="as.com.au.ptvwear" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -16,6 +17,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="as.com.au.ptvwear.StopsActivity_"
+            android:label="@string/title_activity_stops" >
         </activity>
     </application>
 
