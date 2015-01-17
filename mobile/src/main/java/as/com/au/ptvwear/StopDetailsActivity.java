@@ -32,7 +32,7 @@ public class StopDetailsActivity extends ActionBarActivity {
         depListView.setAdapter(listAdapter = new DeparturesListAdapter(this));
 
         // now get departures
-        NetworkService.getInstance().getNextDeparture(stop,
+        NetworkService.getInstance().getBroadDepartures(stop,
                 new ResponseHandler<List<Departure>>() {
                     @Override
                     public void onSuccess(List<Departure> result) {

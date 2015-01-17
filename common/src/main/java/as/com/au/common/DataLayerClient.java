@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import as.com.au.common.model.Departure;
-import as.com.au.common.model.Stop;
+import as.com.au.common.model.FaveStop;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -146,7 +146,7 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
                 // favourite list
                 if(path.equals(Const.PATH_FAVOURITES)) {
                     String dataStr = dataMapItem.getDataMap().get(Const.KEY_FAVOURITES);
-                    List<Stop> faves = new JSONSerializer<Stop>().serialize(dataStr, new TypeToken<List<Stop>>(){}.getType());
+                    List<FaveStop> faves = new JSONSerializer<FaveStop>().serialize(dataStr, new TypeToken<List<FaveStop>>(){}.getType());
                     EventBus.getDefault().post(new DataItemChangedEvent(faves));
                 } else if(path.equals(Const.PATH_DEPARTURE)) {
                     String dataStr = dataMapItem.getDataMap().get(Const.KEY_DEPARTURE);

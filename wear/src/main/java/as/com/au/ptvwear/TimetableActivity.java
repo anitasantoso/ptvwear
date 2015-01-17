@@ -6,6 +6,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.wearable.Wearable;
 
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
+
 import java.util.List;
 
 import as.com.au.common.Const;
@@ -16,6 +20,7 @@ import de.greenrobot.event.EventBus;
 public class TimetableActivity extends Activity {
 
     TextView textView;
+    TextView durationTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +28,13 @@ public class TimetableActivity extends Activity {
         setContentView(R.layout.activity_timetable);
 
         textView = (TextView) findViewById(R.id.text_view);
-        int stopId = getIntent().getExtras().getInt(Const.EXTRA_STOP_ID);
+        durationTextView = (TextView)findViewById(R.id.duration_tv);
+
+        String faveId = getIntent().getExtras().getString(Const.EXTRA_FAVE_ID);
 
         Wearable.MessageApi.sendMessage(DataLayerClient.getInstance().getClient(), DataLayerClient.getInstance().getNodeId(),
                 Const.PATH_FETCH_DEPARTURE,
-                String.valueOf(stopId).getBytes());
+                String.valueOf(faveId).getBytes());
     }
 
     @Override
@@ -43,9 +50,17 @@ public class TimetableActivity extends Activity {
     }
 
     public void onEventMainThread(final DataLayerClient.DataItemChangedEvent<List<Departure>> event) {
-        List<Departure> times = event.item;
-        if(!times.isEmpty()) {
-            textView.setText(times.get(0).toString());
+        List<Departure> departures = event.item;
+
+        if(!departures.isEmpty()) {
+            Departure dep = departures.get(0);
+
+            DateTime time = dep.getTime();
+            Minutes waitTimeInMins = Minutes.minutesBetween(new DateTime(), time);
+
+            durationTextView.setText(String.format("(in %s mins)",
+                    String.valueOf(waitTimeInMins.getMinutes())));
+            textView.setText(DateTimeFormat.forStyle("MS").print(dep.getTime()));
         }
     }
 }

@@ -69,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 FaveStop fave = (FaveStop) listAdapter.getItem(position);
-                NetworkService.getInstance().getNextDeparture(fave.getStop(),
+                NetworkService.getInstance().getBroadDepartures(fave.getStop(),
                         new ResponseHandler<List<Departure>>() {
 
                             @Override
@@ -178,7 +178,7 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
             if (fave == null) {
                 return;
             }
-            NetworkService.getInstance().getNextDeparture(fave.getStop(),
+            NetworkService.getInstance().getNextDeparture(fave.getStop(), fave.getLine().getLineId(), fave.getLine().getDirectionId(),
                     new ResponseHandler<List<Departure>>() {
                         @Override
                         public void onSuccess(List<Departure> result) {

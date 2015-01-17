@@ -10,6 +10,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.Key;
@@ -39,6 +40,7 @@ public class NetworkService {
     public static final String URI_HEALTHCHECK = "/v2/healthcheck";
     public static final String URI_NEARBY_STOPS = "/v2/nearme/latitude/%s/longitude/%s";
     public static final String URI_DEPARTURE = "/v2/mode/%d/stop/%d/departures/by-destination/limit/%d";
+    public static final String URI_NEXT_DEPARTURE = "/v2/mode/%d/line/%s/stop/%d/directionid/%s/departures/all/limit/%d";
 
     private static NetworkService instance = new NetworkService();
     private AsyncHttpClient client;
@@ -101,7 +103,56 @@ public class NetworkService {
         });
     }
 
-    public void getNextDeparture(final Stop stop, final ResponseHandler<List<Departure>> handler) {
+    private Departure departureFromJSONObject(Stop stop, JSONObject obj) throws JSONException {
+        JSONObject dirObj = obj.getJSONObject("platform").getJSONObject("direction");
+        String directionName = dirObj.getString("direction_name");
+        String directionId = dirObj.getString("direction_id");
+
+        JSONObject lineObj = dirObj.getJSONObject("line");
+        String lineName = lineObj.getString("line_name");
+        String lineId = lineObj.getString("line_id");
+        String timeStr = obj.getString("time_timetable_utc");
+
+        Line line = new Line(lineId, lineName, directionId, directionName);
+        return new Departure(stop, line, timeStr);
+
+    }
+
+    // TODO get subsequent departures
+    public void getNextDeparture(final Stop stop, String lineId, String directionId, final ResponseHandler<List<Departure>> handler) {
+        // public static final String URI_NEXT_DEPARTURE = "/v2/mode/%d/line/%s/stop/%d/directionid/%s/departures/all/limit/%d";
+
+        // limit to one next departure
+        String signedUrl = generateSignedUrl(String.format(URI_NEXT_DEPARTURE, stop.getTransportType().getIndex(),
+                lineId, stop.getStopId(), directionId, 1));
+
+        client.get(signedUrl, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                List<Departure> departures = new ArrayList<Departure>();
+                Departure dep = null;
+                try {
+                    JSONArray arr = response.getJSONArray("values");
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject obj = arr.getJSONObject(i);
+                        dep = departureFromJSONObject(stop, obj);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(dep != null) {
+                    departures.add(dep);
+                }
+                handler.onSuccess(departures);
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                handler.onError(errorResponse.toString());
+            }
+        });
+    }
+
+    public void getBroadDepartures(final Stop stop, final ResponseHandler<List<Departure>> handler) {
 
         // limit to one next departure
         String signedUrl = generateSignedUrl(String.format(URI_DEPARTURE, stop.getTransportType().getIndex(), stop.getStopId(), 1));
@@ -113,19 +164,7 @@ public class NetworkService {
                     JSONArray arr = response.getJSONArray("values");
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
-
-                        JSONObject dirObj = obj.getJSONObject("platform").getJSONObject("direction");
-                        String directionName = dirObj.getString("direction_name");
-                        String directionId = dirObj.getString("direction_id");
-
-                        JSONObject lineObj = dirObj.getJSONObject("line");
-                        String lineName = lineObj.getString("line_name");
-                        String lineId = lineObj.getString("line_id");
-                        String timeStr = obj.getString("time_timetable_utc");
-
-                        Line line = new Line(lineId, lineName, directionId, directionName);
-                        Departure dep = new Departure(stop, line, timeStr);
-                        departures.add(dep);
+                        departures.add(departureFromJSONObject(stop, obj));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

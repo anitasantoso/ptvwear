@@ -70,15 +70,15 @@ public class ApplicationTest extends InstrumentationTestCase {
                             Log.d(TAG, stop.toString());
 
 //                            if(stop.getTransportType() == Stop.TransportType.Train) {
-                            NetworkService.getInstance().getNextDeparture(stop, new ResponseHandler<List<Departure>>() {
+                            NetworkService.getInstance().getBroadDepartures(stop, new ResponseHandler<List<Departure>>() {
                                 @Override
                                 public void onSuccess(List<Departure> result) {
 
                                     stopCount++;
-                                    for(Departure dep : result) {
+                                    for (Departure dep : result) {
                                         Log.d(TAG, dep.toString());
                                     }
-                                    if(stopCount == stops.size()) {
+                                    if (stopCount == stops.size()) {
                                         latch.countDown();
                                     }
                                 }
