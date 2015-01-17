@@ -68,8 +68,8 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Stop stop = (Stop) listAdapter.getItem(position);
-                NetworkService.getInstance().getNextDeparture(stop,
+                FaveStop fave = (FaveStop) listAdapter.getItem(position);
+                NetworkService.getInstance().getNextDeparture(fave.getStop(),
                         new ResponseHandler<List<Departure>>() {
 
                             @Override
