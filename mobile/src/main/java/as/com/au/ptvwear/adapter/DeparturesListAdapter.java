@@ -19,11 +19,14 @@ import as.com.au.ptvwear.utils.FaveMgr_;
  * Created by Anita on 17/01/2015.
  */
 public class DeparturesListAdapter extends BaseAdapter {
+
     Context context;
     List<Departure> items;
+    FaveMgr_ faveMgr;
 
     public DeparturesListAdapter(Context context) {
         this.context = context;
+        faveMgr = FaveMgr_.getInstance_(context);
     }
 
     public void setItems(List<Departure> items) {
@@ -57,16 +60,27 @@ public class DeparturesListAdapter extends BaseAdapter {
         lineTextView.setText(dep.getLine().getLineName());
         dirNameTextView.setText("To " + dep.getLine().getDirectionName());
 
-        ImageButton faveBtn = (ImageButton) convertView.findViewById(R.id.button_fave);
+        final ImageButton faveBtn = (ImageButton) convertView.findViewById(R.id.button_fave);
+        final boolean isFavourite = faveMgr.isFavourite(dep.getStop(), dep.getLine());
+        setFaveBtnDrawable(faveBtn, isFavourite);
+
         faveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 FaveStop fave = new FaveStop(dep.getStop(), dep.getLine());
-                FaveMgr_.getInstance_(context).add(fave);
-               // TODO TODO add to favourites
+                if(!isFavourite) {
+                    faveMgr.add(fave);
+                } else {
+                    faveMgr.remove(fave);
+                }
+                setFaveBtnDrawable(faveBtn, !isFavourite);
             }
         });
         return convertView;
+    }
+
+    private void setFaveBtnDrawable(ImageButton b, boolean isFave) {
+        b.setImageDrawable(context.getResources()
+                .getDrawable(isFave ? R.drawable.ic_fave_on : R.drawable.ic_fave_off));
     }
 }

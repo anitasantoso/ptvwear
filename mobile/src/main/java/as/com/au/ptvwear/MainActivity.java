@@ -108,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
         super.onResume();
 
         List<FaveStop> faves = faveMgr.getFaves();
-        boolean isEmpty = faves == null || faves.isEmpty();
+        boolean isEmpty = faves.isEmpty();
         emptyTextView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
         faveListView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
 

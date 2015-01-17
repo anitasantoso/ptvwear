@@ -27,9 +27,25 @@ public class Line {
         return lineName;
     }
 
+    public String getDirectionId() {
+        return directionId;
+    }
+
+    public String getLineId() {
+        return lineId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Line) {
+            Line other = (Line)o;
+            return getLineId().equals(other.getLineId()) && getDirectionId().equals(other.getDirectionId());
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return new StringBuffer().append(lineName).append(" towards ").append(directionName).toString();
     }
-
 }

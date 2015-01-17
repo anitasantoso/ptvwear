@@ -5,10 +5,13 @@ import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 import com.googlecode.androidannotations.api.Scope;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import as.com.au.common.JSONSerializer;
 import as.com.au.common.model.FaveStop;
+import as.com.au.common.model.Line;
+import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.prefs.FavePrefs_;
 
 /**
@@ -27,15 +30,22 @@ public class FaveMgr {
         setFave(faves);
     }
 
+    // TODO check duplicate
     public void add(FaveStop fave) {
         List<FaveStop> faves = getFaves();
         faves.add(fave);
         setFave(faves);
     }
 
-//    public boolean isFave(FaveStop stop) {
-//        return getFaves().contains(stop);
-//    }
+    public void setTitle(String faveId, String title) {
+        List<FaveStop> faves = getFaves();
+        for(FaveStop fave : faves) {
+            if(fave.getFaveId().equals(faveId)) {
+                fave.setTitle(title);
+            }
+        }
+        setFave(faves);
+    }
 
     private void setFave(List<FaveStop> faves) {
         String jsonArrStr = serializer.deserialize(faves, new TypeToken<List<FaveStop>>(){}.getType());
@@ -48,7 +58,20 @@ public class FaveMgr {
 
     public List<FaveStop> getFaves() {
         String favesStr = prefs.faveStops().get();
-        return serializer.serialize(favesStr, new TypeToken<List<FaveStop>>(){}.getType());
+        List<FaveStop> faves = serializer.serialize(favesStr, new TypeToken<List<FaveStop>>(){}.getType());
+        if(faves == null) {
+            faves = new ArrayList<FaveStop>();
+        }
+        return faves;
+    }
+
+    public boolean isFavourite(Stop stop, Line line) {
+        for(FaveStop fave : getFaves()) {
+            if(fave.getStop().equals(stop) && fave.getLine().equals(line)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public FaveStop faveById(String faveId) {

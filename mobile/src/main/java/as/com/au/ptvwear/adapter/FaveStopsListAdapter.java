@@ -17,6 +17,7 @@ import as.com.au.common.model.FaveStop;
 import as.com.au.common.model.Line;
 import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.R;
+import as.com.au.ptvwear.utils.FaveMgr;
 import as.com.au.ptvwear.utils.FaveMgr_;
 
 /**
@@ -26,16 +27,17 @@ public class FaveStopsListAdapter extends BaseAdapter {
 
     public interface DatasetChangedDelegate<T> {
         public void itemRemoved(T item);
-
         public void itemAdded(T item);
     }
 
     DatasetChangedDelegate<Stop> delegate;
     Context context;
     List<FaveStop> items;
+    FaveMgr faveMgr;
 
     public FaveStopsListAdapter(Context context) {
         this.context = context;
+        faveMgr = FaveMgr_.getInstance_(context);
     }
 
     public void setDelegate(DatasetChangedDelegate<Stop> delegate) {
@@ -48,17 +50,17 @@ public class FaveStopsListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return items != null ? items.size() : 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return items.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -75,7 +77,7 @@ public class FaveStopsListAdapter extends BaseAdapter {
         final Line line = fave.getLine();
 
         locTxtView.setText(line.getLineName());
-        suburbTxtView.setText("To" + line.getDirectionName());
+        suburbTxtView.setText("To " + line.getDirectionName());
         typeTxtView.setText(stop.getTransportType().toString());
 
         ImageButton faveBtn = (ImageButton) convertView.findViewById(R.id.button_fave);
@@ -84,7 +86,7 @@ public class FaveStopsListAdapter extends BaseAdapter {
         // set title
         TextView titleTextView = (TextView) convertView.findViewById(R.id.title_tv);
         String title = fave.getTitle();
-        titleTextView.setVisibility(title != null ? View.GONE : View.VISIBLE);
+        titleTextView.setVisibility(title != null && !title.isEmpty() ? View.VISIBLE : View.GONE);
         if (title != null) {
             titleTextView.setText(title);
         }
@@ -94,31 +96,42 @@ public class FaveStopsListAdapter extends BaseAdapter {
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogPrompt(stop);
+                showDialogPrompt(fave);
             }
         });
         faveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FaveMgr_.getInstance_(context).remove(fave);
+                faveMgr.remove(fave);
+                reloadData();
             }
         });
 
         return convertView;
     }
 
-    private void showDialogPrompt(final Stop stop) {
+    private void reloadData() {
+        // reload
+        setItems(faveMgr.getFaves());
+        notifyDataSetChanged();
+    }
+
+    private void showDialogPrompt(final FaveStop fave) {
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
         alert.setTitle("Edit");
-        alert.setMessage("Enter summary for this stop e.g. morning commute");
+        alert.setMessage("Enter summary for this stop e.g. train to city");
 
         final EditText input = new EditText(context);
+        input.setText(fave.getTitle());
         alert.setView(input);
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = input.getText().toString();
+                faveMgr.setTitle(fave.getFaveId(), value);
+
+                reloadData();
             }
         });
 
