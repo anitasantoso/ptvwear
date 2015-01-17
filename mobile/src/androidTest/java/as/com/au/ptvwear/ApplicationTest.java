@@ -57,7 +57,9 @@ public class ApplicationTest extends InstrumentationTestCase {
             public void run() {
 
                 // current location
-                NetworkService.getInstance().getNearbyStops(-37.865300, 144.994785, new ResponseHandler<List<Stop>>() {
+                // home -37.865300, 144.994785
+                // flinders st -37.818178, 144.966880
+                NetworkService.getInstance().getNearbyStops(-37.818178, 144.966880, new ResponseHandler<List<Stop>>() {
 
                     @Override
                     public void onSuccess(final List<Stop> stops) {

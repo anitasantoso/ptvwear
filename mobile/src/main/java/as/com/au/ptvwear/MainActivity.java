@@ -27,7 +27,7 @@ import as.com.au.common.DataLayerClient;
 import as.com.au.common.JSONSerializer;
 import as.com.au.common.model.Departure;
 import as.com.au.common.model.Stop;
-import as.com.au.ptvwear.adapter.StopsListAdapter;
+import as.com.au.ptvwear.adapter.FaveStopsListAdapter;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 import as.com.au.ptvwear.utils.AlertUtils;
@@ -35,7 +35,7 @@ import as.com.au.ptvwear.utils.FaveMgr;
 import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends ActionBarActivity implements StopsListAdapter.DatasetChangedDelegate<Stop> {
+public class MainActivity extends ActionBarActivity implements FaveStopsListAdapter.DatasetChangedDelegate<Stop> {
 
     private static final String TAG = "MainActivity";
     private static final int REQUEST_VIEW_STOPS = 100;
@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
     @Bean
     FaveMgr faveMgr;
 
-    StopsListAdapter listAdapter;
+    FaveStopsListAdapter listAdapter;
     DataLayerClient client;
 
     @AfterInject
@@ -61,30 +61,31 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
 
     @AfterViews
     void initViews() {
-        faveListView.setAdapter(listAdapter = new StopsListAdapter(this));
+        faveListView.setAdapter(listAdapter = new FaveStopsListAdapter(this));
         listAdapter.setDelegate(this);
         faveListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Stop stop = (Stop) listAdapter.getItem(position);
-                NetworkService.getInstance().getNextDeparture(stop, new ResponseHandler<List<Departure>>() {
+                NetworkService.getInstance().getNextDeparture(stop.getTransportType().getIndex(), stop.getStopId(),
+                        new ResponseHandler<List<Departure>>() {
 
-                    @Override
-                    public void onSuccess(List<Departure> result) {
+                            @Override
+                            public void onSuccess(List<Departure> result) {
 
-                        StringBuffer desc = new StringBuffer();
-                        for (Departure dep : result) {
-                            desc.append(dep.toString()).append("\n\n");
-                        }
-                        AlertUtils.showError(MainActivity.this, desc.toString());
-                    }
+                                StringBuffer desc = new StringBuffer();
+                                for (Departure dep : result) {
+                                    desc.append(dep.toString()).append("\n\n");
+                                }
+                                AlertUtils.showError(MainActivity.this, desc.toString());
+                            }
 
-                    @Override
-                    public void onError(String error) {
-                        AlertUtils.showError(MainActivity.this, error);
-                    }
-                });
+                            @Override
+                            public void onError(String error) {
+                                AlertUtils.showError(MainActivity.this, error);
+                            }
+                        });
             }
         });
     }
@@ -173,28 +174,30 @@ public class MainActivity extends ActionBarActivity implements StopsListAdapter.
 
             String stopId = event.payload;
             Stop stop = faveMgr.stopById(Integer.parseInt(stopId));
-            if(stop == null) {
+            if (stop == null) {
                 return;
             }
-            NetworkService.getInstance().getNextDeparture(stop, new ResponseHandler<List<Departure>>() {
-                @Override
-                public void onSuccess(List<Departure> result) {
-                    // now back at the watch
+            NetworkService.getInstance().getNextDeparture(stop.getTransportType().getIndex(), stop.getStopId(),
+                    new ResponseHandler<List<Departure>>() {
+                        @Override
+                        public void onSuccess(List<Departure> result) {
+                            // now back at the watch
 
-                    PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Const.PATH_DEPARTURE);
-                    putDataMapRequest.getDataMap().putString(Const.KEY_DEPARTURE, new JSONSerializer<Departure>()
-                            .deserialize(result, new TypeToken<List<Departure>>(){}.getType()));
-                    putDataMapRequest.getDataMap().putInt(Const.KEY_COUNT, count++); // trigger changes?
+                            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Const.PATH_DEPARTURE);
+                            putDataMapRequest.getDataMap().putString(Const.KEY_DEPARTURE, new JSONSerializer<Departure>()
+                                    .deserialize(result, new TypeToken<List<Departure>>() {
+                                    }.getType()));
+                            putDataMapRequest.getDataMap().putInt(Const.KEY_COUNT, count++); // trigger changes?
 
-                    PutDataRequest request = putDataMapRequest.asPutDataRequest();
-                    Wearable.DataApi.putDataItem(client.getClient(), request);
-                }
+                            PutDataRequest request = putDataMapRequest.asPutDataRequest();
+                            Wearable.DataApi.putDataItem(client.getClient(), request);
+                        }
 
-                @Override
-                public void onError(String error) {
+                        @Override
+                        public void onError(String error) {
 
-                }
-            });
+                        }
+                    });
         }
     }
 }

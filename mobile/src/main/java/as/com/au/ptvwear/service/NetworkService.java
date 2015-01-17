@@ -20,6 +20,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import as.com.au.common.model.Departure;
+import as.com.au.common.model.Line;
 import as.com.au.common.model.Stop;
 
 /**
@@ -100,10 +101,10 @@ public class NetworkService {
         });
     }
 
-    public void getNextDeparture(Stop stop, final ResponseHandler<List<Departure>> handler) {
+    public void getNextDeparture(int transportTypeIndex, int stopId, final ResponseHandler<List<Departure>> handler) {
 
         // limit to one next departure
-        String signedUrl = generateSignedUrl(String.format(URI_DEPARTURE, stop.getTransportType().getIndex(), stop.getStopId(), 1));
+        String signedUrl = generateSignedUrl(String.format(URI_DEPARTURE, transportTypeIndex, stopId, 1));
         client.get(signedUrl, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -112,9 +113,18 @@ public class NetworkService {
                     JSONArray arr = response.getJSONArray("values");
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
-                        String directionName = obj.getJSONObject("platform").getJSONObject("direction").getString("direction_name");
+
+                        JSONObject dirObj = obj.getJSONObject("platform").getJSONObject("direction");
+                        String directionName = dirObj.getString("direction_name");
+                        String directionId = dirObj.getString("direction_id");
+
+                        JSONObject lineObj = dirObj.getJSONObject("line");
+                        String lineName = lineObj.getString("line_name");
+                        String lineId = lineObj.getString("line_id");
                         String timeStr = obj.getString("time_timetable_utc");
-                        Departure dep = new Departure(directionName, timeStr);
+
+                        Line line = new Line(lineId, lineName, directionId, directionName);
+                        Departure dep = new Departure(line, timeStr);
                         departures.add(dep);
                     }
                 } catch (Exception e) {

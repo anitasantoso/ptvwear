@@ -5,13 +5,10 @@ package as.com.au.common.model;
  */
 public class FaveStop {
 
-    // TODO be able to store name as well later on
-
-    private String stopId;
+    private Stop stop;
+    private Line line;
+    private String desc;
 
     public FaveStop() {}
 
-    public FaveStop(String stopId) {
-        this.stopId = stopId;
-    }
 }

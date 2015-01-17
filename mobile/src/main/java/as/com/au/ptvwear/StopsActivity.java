@@ -1,9 +1,12 @@
 package as.com.au.ptvwear;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
@@ -14,11 +17,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import as.com.au.ptvwear.adapter.StopsListAdapter;
 import as.com.au.common.model.Stop;
+import as.com.au.ptvwear.adapter.StopsListAdapter;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 import as.com.au.ptvwear.utils.AlertUtils;
+import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_stops)
 public class StopsActivity extends ActionBarActivity {
@@ -31,6 +35,17 @@ public class StopsActivity extends ActionBarActivity {
     @AfterViews
     void initViews() {
         stopsListView.setAdapter(listAdapter = new StopsListAdapter(this));
+        stopsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // pass Stop object
+                EventBus.getDefault().postSticky(listAdapter.getItem(position));
+
+                Intent intent = new Intent(StopsActivity.this, StopDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -39,8 +54,9 @@ public class StopsActivity extends ActionBarActivity {
 
         // TODO location manager
         // TODO Show spinner
-        // home
-        NetworkService.getInstance().getNearbyStops(-37.865300, 144.994785, new ResponseHandler<List<Stop>>() {
+        // home -37.865300, 144.994785
+        // flinders st -37.818178, 144.966880
+        NetworkService.getInstance().getNearbyStops(-37.818178, 144.966880, new ResponseHandler<List<Stop>>() {
             @Override
             public void onSuccess(List<Stop> result) {
 

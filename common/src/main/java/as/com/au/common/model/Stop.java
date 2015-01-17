@@ -6,7 +6,7 @@ package as.com.au.common.model;
 public class Stop {
 
     public static enum TransportType {
-        Train("train"), Tram("tram"), Bus("bus"), Unknown(""), ;
+        Train("train"), Tram("tram"), Bus("bus"), VLine("vline"), NightRider("nightrider"), Unknown(""), ;
 
         String desc;
         TransportType(String desc) {
