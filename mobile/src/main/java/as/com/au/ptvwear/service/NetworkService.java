@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +26,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import as.com.au.common.model.Departure;
+import as.com.au.common.model.HealthCheckStatus;
 import as.com.au.common.model.Line;
 import as.com.au.common.model.Stop;
 import as.com.au.common.model.TransportType;
@@ -41,10 +44,11 @@ public class NetworkService {
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
     private static final String BASE_URL = "http://timetableapi.ptv.vic.gov.au";
-    public static final String URI_HEALTHCHECK = "/v2/healthcheck";
-    public static final String URI_NEARBY_STOPS = "/v2/nearme/latitude/%s/longitude/%s";
-    public static final String URI_DEPARTURE = "/v2/mode/%d/stop/%d/departures/by-destination/limit/%d";
-    public static final String URI_NEXT_DEPARTURE = "/v2/mode/%d/line/%s/stop/%d/directionid/%s/departures/all/limit/%d";
+    private static final String URI_HEALTHCHECK = "/v2/healthcheck";
+    private static final String URI_NEARBY_STOPS = "/v2/nearme/latitude/%s/longitude/%s";
+    private static final String URI_DEPARTURE = "/v2/mode/%d/stop/%d/departures/by-destination/limit/%d";
+    private static final String URI_NEXT_DEPARTURE = "/v2/mode/%d/line/%s/stop/%d/directionid/%s/departures/all/limit/%d";
+    private static final String SEARCH_URI = "/v2/search/%s";
 
     private static NetworkService instance = new NetworkService();
     private AsyncHttpClient asyncHttpClient;
@@ -68,21 +72,52 @@ public class NetworkService {
 
         getClient().get(signedUrl, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                /**
-                 * TODO
-                 * {
-                 "securityTokenOK": true,
-                 "clientClockOK": false,
-                 "memcacheOK": true,
-                 "databaseOK": true
-                 }
-                 */
-                Log.d(TAG, "Success");
-                handler.onSuccess(null);
+                Gson gson = new Gson();
+                HealthCheckStatus obj = gson.fromJson(response.toString(), HealthCheckStatus.class);
+                if (obj.hasError()) {
+                    handler.onError(obj.getError());
+                } else {
+                    handler.onSuccess(null);
+                }
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                handler.onError(errorResponse.toString());
+            }
+        });
+    }
+
+    public void search(String keyword, final ResponseHandler<List<Stop>> handler) {
+
+        String signedUrl = null;
+        try {
+            signedUrl = generateSignedUrl(String.format(SEARCH_URI, URLEncoder.encode(keyword, DEFAULT_ENCODING)));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (signedUrl == null) {
+            handler.onError("Invalid keyword");
+        }
+
+        getClient().get(signedUrl, new JsonHttpResponseHandler() {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                List<Stop> stops = new ArrayList<Stop>();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+
+                        JSONObject obj = response.getJSONObject(i).getJSONObject("result");
+                        Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+                        Stop stop = gson.fromJson(obj.toString(), Stop.class);
+                        stops.add(stop);
+
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+                }
+                handler.onSuccess(stops);
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 handler.onError(errorResponse.toString());
             }
         });
@@ -92,13 +127,16 @@ public class NetworkService {
         getNearbyStops(lat, lon, handler, null);
     }
 
+    /**
+     * TODO this is better implemented using transport POI API
+     */
     public void getNearbyStops(double lat, double lon, final ResponseHandler<List<Stop>> handler, final TransportType... transportTypes) {
         String signedUrl = generateSignedUrl(String.format(URI_NEARBY_STOPS, String.valueOf(lat), String.valueOf(lon)));
 
         getClient().get(signedUrl, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 List<Stop> stops = new ArrayList<Stop>();
-                List<TransportType> types = Arrays.asList(transportTypes);
+                List<TransportType> types = transportTypes != null ? Arrays.asList(transportTypes) : null;
 
                 try {
                     for (int i = 0; i < response.length(); i++) {
@@ -110,6 +148,9 @@ public class NetworkService {
                         if (types == null || types != null && types.contains(stop.getTransportType())) {
                             stops.add(stop);
                         }
+
+                        // TODO narrow result by distance
+                        // check if distance attribute is legit?
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
@@ -117,7 +158,7 @@ public class NetworkService {
                 handler.onSuccess(stops);
             }
 
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 handler.onError(errorResponse.toString());
             }
         });
@@ -154,12 +195,11 @@ public class NetworkService {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 List<Departure> departures = new ArrayList<Departure>();
-                Departure dep = null;
                 try {
                     JSONArray arr = response.getJSONArray("values");
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
-                        dep = departureFromJSONObject(stop, obj);
+                        Departure dep = departureFromJSONObject(stop, obj);
                         departures.add(dep);
                     }
                 } catch (Exception e) {

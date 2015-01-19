@@ -20,7 +20,7 @@ public class ApplicationTest extends InstrumentationTestCase {
     public static final String TAG = "ApplicationTest";
     int stopCount;
 
-    public void testNetworkService() throws Throwable {
+    public void testHealth() throws Throwable {
         final CountDownLatch latch = new CountDownLatch(1);
 
         runTestOnUiThread(new Runnable() {
@@ -41,12 +41,7 @@ public class ApplicationTest extends InstrumentationTestCase {
                 });
             }
         });
-
-        try {
-            latch.await(30, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        await(latch);
     }
 
     public void testNearbyStops() throws Throwable {
@@ -100,7 +95,33 @@ public class ApplicationTest extends InstrumentationTestCase {
                 });
             }
         });
+        await(latch);
+    }
 
+    public void testSearch() throws Throwable {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NetworkService.getInstance().search("Balaclava", new ResponseHandler<List<Stop>>() {
+                    @Override
+                    public void onSuccess(List<Stop> result) {
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        latch.countDown();
+                    }
+                });
+            }
+        });
+
+        await(latch);
+    }
+
+    private void await(final CountDownLatch latch) {
         try {
             latch.await(30, TimeUnit.SECONDS);
         } catch (InterruptedException e) {

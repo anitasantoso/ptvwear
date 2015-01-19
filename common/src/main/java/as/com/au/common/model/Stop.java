@@ -20,8 +20,9 @@ public class Stop {
      }
      */
     private int stopId;
-//    private String distance;
-//    private double lon;
+    private String distance;
+    private double lat;
+    private double lon;
     private String locationName;
     private String transportType;
     private String suburb;
@@ -32,13 +33,17 @@ public class Stop {
         return stopId;
     }
 
-//    public String getDistance() {
-//        return distance;
-//    }
-//
-//    public double getLon() {
-//        return lon;
-//    }
+    public String getDistance() {
+        return distance;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
 
     public String getLocationName() {
         return locationName;

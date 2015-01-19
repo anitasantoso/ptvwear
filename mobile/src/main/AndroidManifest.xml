@@ -3,8 +3,8 @@
     package="as.com.au.ptvwear" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name="as.com.au.ptvwear.PTVWearApplication"
@@ -18,7 +18,7 @@
 
         <activity
             android:name="as.com.au.ptvwear.MainActivity_"
-            android:label="PTWear" >
+            android:label="PTVWear" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,5 +39,11 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name="as.com.au.ptvwear.TimetableActivity_"
+            android:label="@string/title_activity_timetable" >
+        </activity>
     </application>
+
 </manifest>

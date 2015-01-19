@@ -98,6 +98,7 @@
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.7" level="project" />
     <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="module" module-name="drag-sort-listview" exported="" />
   </component>
 </module>
 

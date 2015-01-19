@@ -10,8 +10,8 @@ import as.com.au.common.DataLayerListenerService;
 public class MobileDataLayerListenerService extends DataLayerListenerService {
 
     public void launchMainActivity() {
-            Intent startIntent = new Intent(this, MainActivity.class);
-            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startIntent);
+        Intent startIntent = new Intent(this, MainActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startIntent);
     }
 }

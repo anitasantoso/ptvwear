@@ -51,6 +51,10 @@ public class FaveStopsListAdapter extends BaseAdapter {
         this.items = stops;
     }
 
+    public List<FaveStop> getItems() {
+        return items;
+    }
+
     @Override
     public int getCount() {
         return items != null ? items.size() : 0;
@@ -116,6 +120,11 @@ public class FaveStopsListAdapter extends BaseAdapter {
         });
 
         return convertView;
+    }
+
+    public void swapItem(int from, int to) {
+        FaveStop obj = items.remove(from);
+        items.add(to, obj);
     }
 
     private void reloadData() {

@@ -27,14 +27,14 @@ public class FaveMgr {
     public void remove(FaveStop fave) {
         List<FaveStop> faves = getFaves();
         faves.remove(fave);
-        setFave(faves);
+        setFaves(faves);
     }
 
     // TODO check duplicate
     public void add(FaveStop fave) {
         List<FaveStop> faves = getFaves();
         faves.add(fave);
-        setFave(faves);
+        setFaves(faves);
     }
 
     public void setTitle(String faveId, String title) {
@@ -44,10 +44,10 @@ public class FaveMgr {
                 fave.setTitle(title);
             }
         }
-        setFave(faves);
+        setFaves(faves);
     }
 
-    private void setFave(List<FaveStop> faves) {
+    public void setFaves(List<FaveStop> faves) {
         String jsonArrStr = serializer.deserialize(faves, new TypeToken<List<FaveStop>>(){}.getType());
         prefs.edit().faveStops().put(jsonArrStr).apply();
     }

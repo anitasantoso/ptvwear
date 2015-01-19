@@ -3,17 +3,18 @@ package as.com.au.ptvwear;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
     private static final int REQUEST_VIEW_STOPS = 100;
 
     @ViewById(R.id.fave_list_view)
-    ListView faveListView;
+    DragSortListView faveListView;
 
     @ViewById(R.id.tv_empty)
     TextView emptyTextView;
@@ -77,12 +78,20 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
                         });
             }
         });
+        faveListView.setDropListener(new DragSortListView.DropListener() {
+            @Override
+            public void drop(int from, int to) {
+                listAdapter.swapItem(from, to);
+                listAdapter.notifyDataSetChanged();
+                faveMgr.setFaves(listAdapter.getItems());
+            }
+        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
-//        EventBus.getDefault().register(this);
+        performHealthCheck();
     }
 
     @Override
@@ -147,5 +156,19 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
         if (requestCode == REQUEST_VIEW_STOPS && resultCode == Activity.RESULT_OK) {
             reloadListView();
         }
+    }
+
+    private void performHealthCheck() {
+        NetworkService.getInstance().healthCheck(new ResponseHandler<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                Log.d(TAG, "Healthcheck status is normal");
+            }
+
+            @Override
+            public void onError(String error) {
+                AlertUtils.showErrorDialog(MainActivity.this, error);
+            }
+        });
     }
 }
