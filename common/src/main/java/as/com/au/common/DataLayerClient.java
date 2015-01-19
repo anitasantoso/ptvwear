@@ -35,29 +35,31 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
         NodeApi.NodeListener {
 
     private static final String TAG = "DataLayerClient";
-    private static DataLayerClient instance;
 
-    static Context context;
+    protected static DataLayerClient instance;
+    protected static Context context;
+
+    GoogleApiClient mGoogleApiClient;
     boolean isConnected;
-    String nodeId;
+    private String nodeId;
 
-    public static void init(Context ctx) {
+    protected DataLayerClient(Context ctx) {
         context = ctx;
-        if(instance == null) {
-            instance = new DataLayerClient(ctx);
-        }
     }
 
-    public DataLayerClient(Context ctx) {
-        context = ctx;
+    public static void init(Context context) {
+        if(instance == null) {
+            instance = new DataLayerClient(context);
+        }
     }
 
     // default instance
     public static DataLayerClient getInstance() {
+        if(instance == null) {
+            throw new IllegalStateException("DataLayerClient hasn't been initialised!");
+        }
         return instance;
     }
-
-    GoogleApiClient mGoogleApiClient;
 
     public void connect() {
         if (isConnected) {
@@ -93,17 +95,19 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
             @Override
             public void onResult(NodeApi.GetConnectedNodesResult nodesResult) {
                 nodeId = null;
-                NodeStateUpdateEvent event = null;
+                ConnectionStateUpdatedEvent event = null;
+
                 if (nodesResult != null) {
                     List<Node> nodes = nodesResult.getNodes();
+
+                    // get first node
                     if (!nodes.isEmpty()) {
-                        // get first one?
                         nodeId = nodes.get(0).getId();
                     }
-                    event = new NodeStateUpdateEvent(true, nodeId);
+                    event = new ConnectionStateUpdatedEvent(true, nodeId);
                 }
                 if(event == null) {
-                    event = new NodeStateUpdateEvent(false, null);
+                    event = new ConnectionStateUpdatedEvent(false, null);
                 }
                 EventBus.getDefault().post(event);
             }
@@ -143,17 +147,22 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
                 String path = event.getDataItem().getUri().getPath();
                 DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
 
+                List<?> items = null;
+
                 // favourite list
                 if(path.equals(Const.PATH_FAVOURITES)) {
                     String dataStr = dataMapItem.getDataMap().get(Const.KEY_FAVOURITES);
-                    List<FaveStop> faves = new JSONSerializer<FaveStop>().serialize(dataStr, new TypeToken<List<FaveStop>>(){}.getType());
-                    EventBus.getDefault().post(new DataItemChangedEvent(faves));
+                    items = new JSONSerializer<FaveStop>().serialize(dataStr, new TypeToken<List<FaveStop>>(){}.getType());
+
                 } else if(path.equals(Const.PATH_DEPARTURE)) {
                     String dataStr = dataMapItem.getDataMap().get(Const.KEY_DEPARTURE);
-                    List<Departure> deps = new JSONSerializer<Departure>().serialize(dataStr, new TypeToken<List<Departure>>(){}.getType());
-                    EventBus.getDefault().post(new DataItemChangedEvent(deps));
+                    items = new JSONSerializer<Departure>().serialize(dataStr, new TypeToken<List<Departure>>(){}.getType());
                 }
 
+                // broadcast items
+                if(items != null) {
+                    EventBus.getDefault().post(new DataItemChangedEvent(items));
+                }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 Log.d(TAG, "Type deleted");
             } else {
@@ -165,7 +174,9 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "onMessageReceived: " + messageEvent);
-        EventBus.getDefault().post(new MessageReceivedEvent(messageEvent.getPath(), new String(messageEvent.getData())));
+
+        processMessage(messageEvent);
+//        EventBus.getDefault().post(new MessageReceivedEvent(messageEvent.getPath(), new String(messageEvent.getData())));
     }
 
     @Override
@@ -175,11 +186,15 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onPeerDisconnected(Node node) {
-        // TODO reconnect?
+        // TODO
     }
 
     public String getNodeId() {
         return nodeId;
+    }
+
+    public void processMessage(MessageEvent event) {
+        // do nothing
     }
 
     public static class DataItemChangedEvent<T> {
@@ -189,22 +204,23 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
         }
     }
 
-    public static class MessageReceivedEvent {
-        public String path;
-        public String payload;
-        public MessageReceivedEvent(String path, String payload) {
-            this.path = path;
-            this.payload = payload;
+    public static class ConnectionStateUpdatedEvent {
+        public String nodeId;
+        public boolean connected;
+
+        public ConnectionStateUpdatedEvent(boolean connected, String nodeId) {
+            this.connected = connected;
+            this.nodeId = nodeId;
         }
     }
 
-    public static class NodeStateUpdateEvent {
-        public String nodeId;
-        public boolean found;
+    public static class MessageReceivedEvent {
+        public String path;
+        public String payload;
 
-        public NodeStateUpdateEvent(boolean found, String nodeId) {
-            this.found = found;
-            this.nodeId = nodeId;
+        public MessageReceivedEvent(String path, String payload) {
+            this.path = path;
+            this.payload = payload;
         }
     }
 }

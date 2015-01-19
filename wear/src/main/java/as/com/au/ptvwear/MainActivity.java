@@ -84,9 +84,9 @@ public class MainActivity extends Activity {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEventMainThread(DataLayerClient.NodeStateUpdateEvent event) {
-        statusTextView.setText(event.found? "Connected" : "No Connection");
-        if(!event.found) {
+    public void onEventMainThread(DataLayerClient.ConnectionStateUpdatedEvent event) {
+        statusTextView.setText(event.connected ? "Connected" : "No Connection");
+        if(!event.connected) {
             Toast.makeText(MainActivity.this, "No connection to device", Toast.LENGTH_SHORT).show();
             return;
         }
