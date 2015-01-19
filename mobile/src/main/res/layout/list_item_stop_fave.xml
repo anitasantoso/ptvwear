@@ -13,12 +13,24 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true">
 
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/title_tv"
-            android:visibility="gone"
-            android:textStyle="bold"/>
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="5dp"
+                android:scaleType="fitXY"
+                android:id="@+id/type_icon_img_view"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/title_tv"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <include
             layout="@layout/list_item_stop"
