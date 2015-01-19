@@ -1,4 +1,4 @@
-package as.com.au.ptvwear;
+package as.com.au.ptvwear.utils;
 
 import android.content.Context;
 
@@ -38,6 +38,17 @@ public class MobileDataLayerClient extends DataLayerClient {
         super(context);
         faveMgr = FaveMgr_.getInstance_(context);
     }
+
+//    public Location getLastKnownLocation() {
+//        if(!isConnected) {
+//            return mLastLocation;
+//        }
+//
+//        // refresh
+//        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                mGoogleApiClient);
+//        return mLastLocation;
+//    }
 
     @Override
     public void processMessage(MessageEvent event) {

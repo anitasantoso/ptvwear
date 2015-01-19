@@ -38,9 +38,9 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
 
     protected static DataLayerClient instance;
     protected static Context context;
+    protected GoogleApiClient mGoogleApiClient;
+    protected boolean isConnected;
 
-    GoogleApiClient mGoogleApiClient;
-    boolean isConnected;
     private String nodeId;
 
     protected DataLayerClient(Context ctx) {

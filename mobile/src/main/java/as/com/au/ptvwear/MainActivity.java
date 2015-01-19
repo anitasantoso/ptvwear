@@ -45,6 +45,9 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
 
     @AfterViews
     void initViews() {
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         faveListView.setAdapter(listAdapter = new FaveStopsListAdapter(this));
         listAdapter.setDelegate(this);
         faveListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

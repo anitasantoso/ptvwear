@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.crypto.Mac;
@@ -23,6 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import as.com.au.common.model.Departure;
 import as.com.au.common.model.Line;
 import as.com.au.common.model.Stop;
+import as.com.au.common.model.TransportType;
 
 /**
  * Created by Anita on 16/01/2015.
@@ -78,19 +80,28 @@ public class NetworkService {
         });
     }
 
-    // TODO only support tram and train for now!!
     public void getNearbyStops(double lat, double lon, final ResponseHandler<List<Stop>> handler) {
+        getNearbyStops(lat, lon, handler, null);
+    }
+
+    public void getNearbyStops(double lat, double lon, final ResponseHandler<List<Stop>> handler, final TransportType... transportTypes) {
         String signedUrl = generateSignedUrl(String.format(URI_NEARBY_STOPS, String.valueOf(lat), String.valueOf(lon)));
 
         client.get(signedUrl, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 List<Stop> stops = new ArrayList<Stop>();
+                List<TransportType> types = Arrays.asList(transportTypes);
+
                 try {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject obj = response.getJSONObject(i).getJSONObject("result");
                         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
                         Stop stop = gson.fromJson(obj.toString(), Stop.class);
-                        stops.add(stop);
+
+                        // if types are specified, filter result
+                        if(types == null || types != null && types.contains(stop.getTransportType())) {
+                            stops.add(stop);
+                        }
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());

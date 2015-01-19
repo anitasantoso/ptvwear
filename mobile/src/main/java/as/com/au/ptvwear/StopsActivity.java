@@ -1,13 +1,11 @@
 package as.com.au.ptvwear;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.location.Location;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
@@ -19,82 +17,155 @@ import java.util.List;
 
 import as.com.au.common.model.Stop;
 import as.com.au.common.model.TransportType;
-import as.com.au.ptvwear.adapter.StopsListAdapter;
+import as.com.au.ptvwear.fragment.StopListFragment;
+import as.com.au.ptvwear.fragment.StopSearchFragment_;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 import as.com.au.ptvwear.utils.AlertUtils;
+import as.com.au.ptvwear.utils.LocationService;
 import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_stops)
 public class StopsActivity extends ActionBarActivity {
 
-    @ViewById(R.id.stops_list_view)
-    ListView stopsListView;
+    private static final String tabTitles[] = new String[]{"Nearby Stops", "Search"};
 
-    StopsListAdapter listAdapter;
+    @ViewById(R.id.pager)
+    ViewPager pager;
 
     @AfterViews
     void initViews() {
-        stopsListView.setAdapter(listAdapter = new StopsListAdapter(this));
-        stopsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        final ActionBar actionBar = getSupportActionBar();
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        setupTabs(actionBar);
+        setupViewPager();
+    }
+
+    private void setupTabs(final ActionBar actionBar) {
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+                pager.setCurrentItem(tab.getPosition());
+            }
 
-                // pass Stop object
-                EventBus.getDefault().postSticky(listAdapter.getItem(position));
+            @Override
+            public void onTabUnselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
 
-                Intent intent = new Intent(StopsActivity.this, StopDetailsActivity_.class);
-                startActivity(intent);
+            }
+
+            @Override
+            public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+
+            }
+        };
+        for (int i = 0; i < tabTitles.length; i++) {
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(tabTitles[i])
+                            .setTabListener(tabListener));
+        }
+    }
+
+    private void setupViewPager() {
+        pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        loadNearbyStops();
+                        return StopListFragment.newFragmentWithType(StopListUpdatedEvent.ItemType.NEARBY);
+                    case 1:
+                        return new StopSearchFragment_();
+                    default:
+                        return null;
+                }
+            }
+
+            @Override
+            public int getCount() {
+                return tabTitles.length;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return tabTitles[position];
+            }
+        });
+
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                getSupportActionBar().setSelectedNavigationItem(position);
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
             }
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void loadNearbyStops() {
 
-        // TODO location manager
-        // TODO Show spinner
-        // home -37.865300, 144.994785
-        // flinders st -37.818178, 144.966880
-        NetworkService.getInstance().getNearbyStops(-37.865300, 144.994785, new ResponseHandler<List<Stop>>() {
-            @Override
-            public void onSuccess(List<Stop> result) {
-
-                Collections.sort(result, new Comparator<Stop>() {
-                    @Override
-                    public int compare(Stop lhs, Stop rhs) {
-                        return lhs.getTransportType() == TransportType.Train ? -1 :
-                                lhs.getTransportType() == TransportType.Tram ? 0 : 1;
-                    }
-                });
-                // update list
-                listAdapter.setStops(result);
-                listAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(String error) {
-                AlertUtils.showError(StopsActivity.this, error);
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_stops, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if(id == R.id.action_done) {
-            setResult(Activity.RESULT_OK);
-            finish();
+        Location loc = LocationService.getLastKnownLocation();
+        if (loc == null) {
+            AlertUtils.showError(this, "Could not find user location");
+            return;
         }
 
-        return super.onOptionsItemSelected(item);
+        // home -37.865300, 144.994785
+        // flinders st -37.818178, 144.966880
+        NetworkService.getInstance().getNearbyStops(loc.getLatitude(), loc.getLongitude(),
+                new ResponseHandler<List<Stop>>() {
+                    @Override
+                    public void onSuccess(List<Stop> result) {
+
+                        Collections.sort(result, new Comparator<Stop>() {
+                            @Override
+                            public int compare(Stop lhs, Stop rhs) {
+                                return lhs.getTransportType() == TransportType.Train ? -1 :
+                                        lhs.getTransportType() == TransportType.Tram ? 0 : 1;
+                            }
+                        });
+                        EventBus.getDefault().post(new StopListUpdatedEvent(result, StopListUpdatedEvent.ItemType.NEARBY));
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        AlertUtils.showError(StopsActivity.this, error);
+                    }
+                }, TransportType.Train, TransportType.Tram);
+    }
+
+    public static class StopListUpdatedEvent {
+
+        public static enum ItemType { NEARBY, SEARCH_RESULT }
+
+        public List<Stop> stops;
+        public ItemType itemType;
+
+        public StopListUpdatedEvent(List<Stop> stops, ItemType itemType) {
+            this.stops = stops;
+            this.itemType = itemType;
+        }
+
+        public static ItemType typeFromIndex(int i) {
+            for(ItemType type : ItemType.values()) {
+                if(type.ordinal() == i) {
+                    return type;
+                }
+            }
+            return null;
+        }
     }
 }

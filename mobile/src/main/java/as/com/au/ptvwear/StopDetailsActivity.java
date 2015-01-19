@@ -20,12 +20,15 @@ import de.greenrobot.event.EventBus;
 public class StopDetailsActivity extends ActionBarActivity {
 
     @ViewById(R.id.departures_list_view)
-
     ListView depListView;
+
     DeparturesListAdapter listAdapter;
 
     @AfterViews
     void initView() {
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Stop stop = EventBus.getDefault().getStickyEvent(Stop.class);
         EventBus.getDefault().removeStickyEvent(Stop.class);
 
