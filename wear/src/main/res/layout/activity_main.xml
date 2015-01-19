@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.wearable.view.BoxInsetLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/ptv_gray"
     android:layout_height="match_parent"
@@ -10,35 +9,37 @@
         android:id="@+id/frame_layout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_gravity="center"
         app:layout_box="left|bottom|right">
 
-        <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:src="@drawable/background1"-->
-            <!--android:scaleType="centerInside"/>-->
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/status_tv"
-            android:textColor="@color/ptv_green"
-            android:text="Connecting..."
-            android:gravity="center"
-            />
+            android:layout_gravity="center_horizontal">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Reload"
-            android:id="@+id/button"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/status_tv"
+                android:textColor="@color/ptv_green"
+                android:layout_centerInParent="true"
+                android:text="Connecting..."
+                android:gravity="center" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_below="@id/status_tv"
+                android:text="Retry"
+                android:id="@+id/button" />
+        </RelativeLayout>
 
         <android.support.wearable.view.WearableListView
             android:id="@+id/wearable_list"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:visibility="gone">
-        </android.support.wearable.view.WearableListView>
+            android:visibility="gone" />
 
     </FrameLayout>
 </android.support.wearable.view.BoxInsetLayout>

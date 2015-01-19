@@ -33,18 +33,24 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         statusTextView = (TextView) findViewById(R.id.status_tv);
-        stopsListView = (WearableListView)findViewById(R.id.wearable_list);
-        button = (Button)findViewById(R.id.button);
+        stopsListView = (WearableListView) findViewById(R.id.wearable_list);
+        button = (Button) findViewById(R.id.button);
 
+        listAdapter = new FavouriteListAdapter(this);
+        stopsListView.setAdapter(listAdapter);
         stopsListView.setClickListener(new WearableListView.ClickListener() {
             @Override
             public void onClick(WearableListView.ViewHolder viewHolder) {
-                int position = (int)viewHolder.itemView.getTag();
-                if(listAdapter != null) {
-                    FaveStop fave = listAdapter.items.get(position);
-                    Intent intent = new Intent(MainActivity.this, TimetablePagerActivity.class);
-                    intent.putExtra(Const.EXTRA_FAVE_ID, fave.getFaveId());
-                    startActivity(intent);
+                int position = (int) viewHolder.itemView.getTag();
+                if (listAdapter != null) {
+                    FaveStop fave = listAdapter.getStopAt(position);
+                    if(fave != null) {
+                        Intent intent = new Intent(MainActivity.this, TimetablePagerActivity.class);
+                        intent.putExtra(Const.EXTRA_FAVE_ID, fave.getFaveId());
+                        startActivity(intent);
+                    } else {
+                        // TODO launch main activity on handheld
+                    }
                 }
             }
 
@@ -76,6 +82,10 @@ public class MainActivity extends Activity {
     public void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+
+        if (client.isConnected()) {
+            fetchFavourites(client.getNodeId());
+        }
     }
 
     @Override
@@ -86,12 +96,14 @@ public class MainActivity extends Activity {
 
     public void onEventMainThread(DataLayerClient.ConnectionStateUpdatedEvent event) {
         statusTextView.setText(event.connected ? "Connected" : "No Connection");
-        if(!event.connected) {
+        if (!event.connected) {
             Toast.makeText(MainActivity.this, "No connection to device", Toast.LENGTH_SHORT).show();
             return;
         }
+        fetchFavourites(event.nodeId);
+    }
 
-        String nodeId = event.nodeId;
+    private void fetchFavourites(String nodeId) {
         Wearable.MessageApi.sendMessage(client.getClient(), nodeId, Const.PATH_FETCH_FAVOURITES,
                 null);
     }
@@ -101,12 +113,7 @@ public class MainActivity extends Activity {
         button.setVisibility(View.GONE);
         stopsListView.setVisibility(View.VISIBLE);
 
-        if(listAdapter == null) {
-            listAdapter = (new FavouriteListAdapter(this, event.item));
-            stopsListView.setAdapter(listAdapter);
-        } else {
-            listAdapter.setItems(event.item);
-            listAdapter.notifyDataSetChanged();
-        }
+        listAdapter.setItems(event.item);
+        listAdapter.notifyDataSetChanged();
     }
 }

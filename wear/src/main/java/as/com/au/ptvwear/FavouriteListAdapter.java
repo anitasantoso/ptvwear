@@ -11,31 +11,28 @@ import android.widget.TextView;
 import java.util.List;
 
 import as.com.au.common.model.FaveStop;
-import as.com.au.common.model.TransportType;
 
 /**
  * Created by Anita on 17/01/2015.
  */
 class FavouriteListAdapter extends WearableListView.Adapter {
-    List<FaveStop> items;
+    private List<FaveStop> items;
     private final Context mContext;
     private final LayoutInflater mInflater;
 
-    public FavouriteListAdapter(Context context, List<FaveStop> items) {
+    public FavouriteListAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        this.items = items;
     }
 
     public void setItems(List<FaveStop> items) {
         this.items = items;
     }
 
-    public List<FaveStop> getItems() {
-        return items;
+    public FaveStop getStopAt(int position) {
+        return items.size() > position? items.get(position) : null;
     }
 
-    // Provide a reference to the type of views you're using
     static class ItemViewHolder extends WearableListView.ViewHolder {
         private TextView textView, descTextView;
         private ImageView imgView;
@@ -48,52 +45,43 @@ class FavouriteListAdapter extends WearableListView.Adapter {
         }
     }
 
-    // Create new views for list items
-    // (invoked by the WearableListView's layout manager)
     @Override
     public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                           int viewType) {
-        // Inflate our custom layout for list items
         return new ItemViewHolder(mInflater.inflate(R.layout.list_item_fave, null));
     }
 
-    // Replace the contents of a list item
-    // Instead of creating new views, the list tries to recycle existing ones
-    // (invoked by the WearableListView's layout manager)
     @Override
     public void onBindViewHolder(WearableListView.ViewHolder holder,
                                  int position) {
 
+        int resId;
+        String title, desc;
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
 
-        FaveStop fave = items.get(position);
-        TransportType type = fave.getStop().getTransportType();
+        if(items.size() > position) {
+            FaveStop fave = items.get(position);
 
-        int resId;
-        switch (type) {
-            case Train:
-                resId = R.drawable.ic_train;
-                break;
-            case Tram:
-                resId = R.drawable.ic_tram;
-                break;
-            case Bus:
-                resId = R.drawable.ic_bus;
-                break;
-            default:
-                resId = R.drawable.ic_train;
+            resId = ResUtil.resIdForTransportType(fave.getStop().getTransportType());
+            title = fave.getStop().getLocationName();
+            desc = "To " + fave.getLine().getDirectionName();
+        } else {
+            resId = R.drawable.ic_phone;
+            title = "Open on device";
+            desc = null;
         }
         itemHolder.imgView.setImageDrawable(mContext.getResources().getDrawable(resId));
-        itemHolder.textView.setText(fave.getStop().getLocationName());
-        itemHolder.descTextView.setText("To " + fave.getLine().getDirectionName());
+        itemHolder.textView.setText(title);
 
+        itemHolder.descTextView.setVisibility(desc == null? View.GONE : View.VISIBLE);
+        if(desc != null) {
+            itemHolder.descTextView.setText(desc);
+        }
         holder.itemView.setTag(position);
     }
 
-    // Return the size of your dataset
-    // (invoked by the WearableListView's layout manager)
     @Override
     public int getItemCount() {
-        return items.size();
+        return items.size() /**+ 1**/; // TODO show link
     }
 }

@@ -1,5 +1,6 @@
 package as.com.au.ptvwear.service;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.gson.FieldNamingPolicy;
@@ -7,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -45,10 +47,16 @@ public class NetworkService {
     public static final String URI_NEXT_DEPARTURE = "/v2/mode/%d/line/%s/stop/%d/directionid/%s/departures/all/limit/%d";
 
     private static NetworkService instance = new NetworkService();
-    private AsyncHttpClient client;
+    private AsyncHttpClient asyncHttpClient;
+    private AsyncHttpClient syncHttpClient;
 
     private NetworkService() {
-        client = new AsyncHttpClient();
+        asyncHttpClient = new AsyncHttpClient();
+        syncHttpClient = new SyncHttpClient();
+    }
+
+    public AsyncHttpClient getClient() {
+        return Looper.myLooper() == Looper.getMainLooper() ? asyncHttpClient : syncHttpClient;
     }
 
     public static NetworkService getInstance() {
@@ -58,7 +66,7 @@ public class NetworkService {
     public void healthCheck(final ResponseHandler<Void> handler) {
         String signedUrl = generateSignedUrl(URI_HEALTHCHECK);
 
-        client.get(signedUrl, new JsonHttpResponseHandler() {
+        getClient().get(signedUrl, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 /**
@@ -87,7 +95,7 @@ public class NetworkService {
     public void getNearbyStops(double lat, double lon, final ResponseHandler<List<Stop>> handler, final TransportType... transportTypes) {
         String signedUrl = generateSignedUrl(String.format(URI_NEARBY_STOPS, String.valueOf(lat), String.valueOf(lon)));
 
-        client.get(signedUrl, new JsonHttpResponseHandler() {
+        getClient().get(signedUrl, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 List<Stop> stops = new ArrayList<Stop>();
                 List<TransportType> types = Arrays.asList(transportTypes);
@@ -99,7 +107,7 @@ public class NetworkService {
                         Stop stop = gson.fromJson(obj.toString(), Stop.class);
 
                         // if types are specified, filter result
-                        if(types == null || types != null && types.contains(stop.getTransportType())) {
+                        if (types == null || types != null && types.contains(stop.getTransportType())) {
                             stops.add(stop);
                         }
                     }
@@ -130,15 +138,19 @@ public class NetworkService {
 
     }
 
-    // TODO get subsequent departures
-    public void getNextDeparture(final Stop stop, String lineId, String directionId, final ResponseHandler<List<Departure>> handler) {
-        // public static final String URI_NEXT_DEPARTURE = "/v2/mode/%d/line/%s/stop/%d/directionid/%s/departures/all/limit/%d";
+    public void getNextDeparture(final Stop stop, String lineId, String directionId,
+                                 final ResponseHandler<List<Departure>> handler) {
+        getNextDeparture(stop, lineId, directionId, 1, handler);
+    }
+
+    public void getNextDeparture(final Stop stop, String lineId, String directionId, int limit,
+                                 final ResponseHandler<List<Departure>> handler) {
 
         // limit to one next departure
         String signedUrl = generateSignedUrl(String.format(URI_NEXT_DEPARTURE, stop.getTransportType().getIndex(),
-                lineId, stop.getStopId(), directionId, 1));
+                lineId, stop.getStopId(), directionId, limit));
 
-        client.get(signedUrl, new JsonHttpResponseHandler() {
+        getClient().get(signedUrl, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 List<Departure> departures = new ArrayList<Departure>();
@@ -148,12 +160,10 @@ public class NetworkService {
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject obj = arr.getJSONObject(i);
                         dep = departureFromJSONObject(stop, obj);
+                        departures.add(dep);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-                if(dep != null) {
-                    departures.add(dep);
                 }
                 handler.onSuccess(departures);
             }
@@ -168,7 +178,7 @@ public class NetworkService {
 
         // limit to one next departure
         String signedUrl = generateSignedUrl(String.format(URI_DEPARTURE, stop.getTransportType().getIndex(), stop.getStopId(), 1));
-        client.get(signedUrl, new JsonHttpResponseHandler() {
+        getClient().get(signedUrl, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 List<Departure> departures = new ArrayList<Departure>();

@@ -81,7 +81,7 @@ public class FaveStopsListAdapter extends BaseAdapter {
         final Line line = fave.getLine();
 
         iconImgView.setImageDrawable(context.getResources().getDrawable(ResUtil.resIdForTransportType(stop.getTransportType())));
-        locTxtView.setText(line.getLineName());
+        locTxtView.setText(stop.getLocationName());
         suburbTxtView.setText("To " + line.getDirectionName());
 
 //        typeTxtView.setText(stop.getTransportType().toString());

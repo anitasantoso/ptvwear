@@ -18,13 +18,13 @@ import as.com.au.ptvwear.utils.FaveMgr_;
 /**
  * Created by Anita on 17/01/2015.
  */
-public class DeparturesListAdapter extends BaseAdapter {
+public class LinesListAdapter extends BaseAdapter {
 
     Context context;
     List<Departure> items;
     FaveMgr_ faveMgr;
 
-    public DeparturesListAdapter(Context context) {
+    public LinesListAdapter(Context context) {
         this.context = context;
         faveMgr = FaveMgr_.getInstance_(context);
     }

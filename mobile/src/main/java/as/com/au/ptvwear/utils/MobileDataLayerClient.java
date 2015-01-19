@@ -1,6 +1,7 @@
 package as.com.au.ptvwear.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
@@ -17,14 +18,13 @@ import as.com.au.common.model.Departure;
 import as.com.au.common.model.FaveStop;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
-import as.com.au.ptvwear.utils.FaveMgr;
-import as.com.au.ptvwear.utils.FaveMgr_;
 
 /**
  * Created by Anita on 19/01/2015.
  */
 public class MobileDataLayerClient extends DataLayerClient {
 
+    public static final String TAG = "MobileDataLayerClient";
     FaveMgr faveMgr;
     int count = 0;
 
@@ -38,17 +38,6 @@ public class MobileDataLayerClient extends DataLayerClient {
         super(context);
         faveMgr = FaveMgr_.getInstance_(context);
     }
-
-//    public Location getLastKnownLocation() {
-//        if(!isConnected) {
-//            return mLastLocation;
-//        }
-//
-//        // refresh
-//        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-//                mGoogleApiClient);
-//        return mLastLocation;
-//    }
 
     @Override
     public void processMessage(MessageEvent event) {
@@ -80,7 +69,10 @@ public class MobileDataLayerClient extends DataLayerClient {
                 return;
             }
 
-            NetworkService.getInstance().getNextDeparture(fave.getStop(), fave.getLine().getLineId(), fave.getLine().getDirectionId(),
+            // get next three departures
+            NetworkService.getInstance().getNextDeparture(fave.getStop(),
+                    fave.getLine().getLineId(),
+                    fave.getLine().getDirectionId(), 3,
                     new ResponseHandler<List<Departure>>() {
 
                         @Override
@@ -99,7 +91,7 @@ public class MobileDataLayerClient extends DataLayerClient {
 
                         @Override
                         public void onError(String error) {
-                            // TODO handle error
+                            Log.e(TAG, error);
                         }
                     });
         }

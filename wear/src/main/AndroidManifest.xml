@@ -41,6 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="as.com.au.ptvwear.TimetableFullscreenActivity"
+            android:label="@string/title_activity_timetable_fullscreen" >
+        </activity>
     </application>
 
 </manifest>

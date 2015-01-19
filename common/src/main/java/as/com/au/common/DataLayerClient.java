@@ -73,6 +73,10 @@ public class DataLayerClient implements GoogleApiClient.ConnectionCallbacks,
         mGoogleApiClient.connect();
     }
 
+    public boolean isConnected() {
+        return isConnected && nodeId != null;
+    }
+
     public boolean reconnect() {
         if (!mGoogleApiClient.isConnected()) {
             ConnectionResult connectionResult = mGoogleApiClient

@@ -11,7 +11,7 @@ import java.util.List;
 
 import as.com.au.common.model.Departure;
 import as.com.au.common.model.Stop;
-import as.com.au.ptvwear.adapter.DeparturesListAdapter;
+import as.com.au.ptvwear.adapter.LinesListAdapter;
 import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 import de.greenrobot.event.EventBus;
@@ -22,7 +22,7 @@ public class StopDetailsActivity extends ActionBarActivity {
     @ViewById(R.id.departures_list_view)
     ListView depListView;
 
-    DeparturesListAdapter listAdapter;
+    LinesListAdapter listAdapter;
 
     @AfterViews
     void initView() {
@@ -32,7 +32,7 @@ public class StopDetailsActivity extends ActionBarActivity {
         Stop stop = EventBus.getDefault().getStickyEvent(Stop.class);
         EventBus.getDefault().removeStickyEvent(Stop.class);
 
-        depListView.setAdapter(listAdapter = new DeparturesListAdapter(this));
+        depListView.setAdapter(listAdapter = new LinesListAdapter(this));
 
         // now get departures
         NetworkService.getInstance().getBroadDepartures(stop,
