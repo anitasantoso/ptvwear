@@ -45,6 +45,7 @@
             android:label="@string/title_activity_timetable"
             android:theme="@style/Theme.Transparent">
         </activity>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="e168fe2382695fe693fd62659d37f8be5e809f1a"/>
     </application>
 
 </manifest>

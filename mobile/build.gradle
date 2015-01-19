@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+
+    dependencies {
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+
+repositories {
+    maven { url 'http://download.crashlytics.com/maven' }
+}
+
 apply plugin: 'android-apt'
 
 android {
@@ -46,6 +61,7 @@ dependencies {
     compile 'junit:junit:4.12'
     compile 'com.loopj.android:android-async-http:1.4.6'
     compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.crashlytics.android:crashlytics:1.+'
 }
 
 apt {
