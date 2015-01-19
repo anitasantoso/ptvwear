@@ -23,8 +23,9 @@
         app:drag_handle_id="@+id/drag_handler"
         app:drag_start_mode="onMove"
         app:float_alpha="0.5"
-        android:listSelector="@color/ptv_green_40_fill"
-        app:float_background_color="@color/ptv_green_40_fill"
-        android:id="@+id/fave_list_view" />
+        android:listSelector="@drawable/grey_list_selector"
+        app:float_background_color="@color/light_grey"
+        android:id="@+id/fave_list_view"
+    />
 
 </RelativeLayout>

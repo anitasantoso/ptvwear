@@ -18,7 +18,6 @@ import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.List;
 
-import as.com.au.common.model.Departure;
 import as.com.au.common.model.FaveStop;
 import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.adapter.FaveStopsListAdapter;
@@ -26,6 +25,7 @@ import as.com.au.ptvwear.service.NetworkService;
 import as.com.au.ptvwear.service.ResponseHandler;
 import as.com.au.ptvwear.utils.AlertUtils;
 import as.com.au.ptvwear.utils.FaveMgr;
+import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends ActionBarActivity implements FaveStopsListAdapter.DatasetChangedDelegate<Stop> {
@@ -56,26 +56,10 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 FaveStop fave = (FaveStop) listAdapter.getItem(position);
-                NetworkService.getInstance().getNextDeparture(fave.getStop(),
-                        fave.getLine().getLineId(),
-                        fave.getLine().getDirectionId(),
-                        new ResponseHandler<List<Departure>>() {
+                EventBus.getDefault().postSticky(fave);
 
-                            @Override
-                            public void onSuccess(List<Departure> result) {
-
-                                StringBuffer desc = new StringBuffer();
-                                for (Departure dep : result) {
-                                    desc.append(dep.toString()).append("\n\n");
-                                }
-                                AlertUtils.showError(MainActivity.this, desc.toString());
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                AlertUtils.showError(MainActivity.this, error);
-                            }
-                        });
+                Intent intent = new Intent(MainActivity.this, TimetableActivity_.class);
+                startActivity(intent);
             }
         });
         faveListView.setDropListener(new DragSortListView.DropListener() {

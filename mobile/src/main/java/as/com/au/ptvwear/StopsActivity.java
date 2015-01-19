@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
@@ -26,7 +25,7 @@ import as.com.au.ptvwear.utils.LocationService;
 import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_stops)
-public class StopsActivity extends ActionBarActivity {
+public class StopsActivity extends BackNavActivity {
 
     private static final String tabTitles[] = new String[]{"Nearby Stops", "Search"};
 

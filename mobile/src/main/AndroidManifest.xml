@@ -42,7 +42,8 @@
 
         <activity
             android:name="as.com.au.ptvwear.TimetableActivity_"
-            android:label="@string/title_activity_timetable" >
+            android:label="@string/title_activity_timetable"
+            android:theme="@style/Theme.Transparent">
         </activity>
     </application>
 

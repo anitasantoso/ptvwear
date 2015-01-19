@@ -103,8 +103,6 @@ public class FaveStopsListAdapter extends BaseAdapter {
         }
         titleTextView.setText(title);
 
-        setFaveBtnDrawable(faveBtn, true);
-
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,8 +154,4 @@ public class FaveStopsListAdapter extends BaseAdapter {
         alert.show();
     }
 
-    private void setFaveBtnDrawable(ImageButton b, boolean isFave) {
-        b.setImageDrawable(context.getResources()
-                .getDrawable(isFave ? R.drawable.ic_fave_on : R.drawable.ic_fave_off));
-    }
 }

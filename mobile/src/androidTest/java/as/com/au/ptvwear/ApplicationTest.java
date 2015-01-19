@@ -64,7 +64,6 @@ public class ApplicationTest extends InstrumentationTestCase {
                         for (Stop stop : stops) {
                             Log.d(TAG, stop.toString());
 
-//                            if(stop.getTransportType() == Stop.TransportType.Train) {
                             NetworkService.getInstance().getBroadDepartures(stop, new ResponseHandler<List<Departure>>() {
                                 @Override
                                 public void onSuccess(List<Departure> result) {
@@ -81,9 +80,9 @@ public class ApplicationTest extends InstrumentationTestCase {
                                 @Override
                                 public void onError(String error) {
                                     latch.countDown();
+                                    fail();
                                 }
                             });
-//                            }
                         }
                     }
 
@@ -113,6 +112,7 @@ public class ApplicationTest extends InstrumentationTestCase {
                     @Override
                     public void onError(String error) {
                         latch.countDown();
+                        fail();
                     }
                 });
             }

@@ -1,6 +1,5 @@
 package as.com.au.ptvwear;
 
-import android.support.v7.app.ActionBarActivity;
 import android.widget.ListView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
@@ -17,7 +16,7 @@ import as.com.au.ptvwear.service.ResponseHandler;
 import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_stop_details)
-public class StopDetailsActivity extends ActionBarActivity {
+public class StopDetailsActivity extends BackNavActivity {
 
     @ViewById(R.id.departures_list_view)
     ListView depListView;

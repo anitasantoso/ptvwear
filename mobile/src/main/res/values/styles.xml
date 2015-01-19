@@ -1,15 +1,21 @@
 <resources>
 
-    <style name="PTVWearTheme"
-        parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="PTVWearTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/GreenActionBarTheme</item>
 
     </style>
 
     <!-- TODO this doesn't work -->
-    <style name="GreenActionBarTheme"
-        parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <style name="GreenActionBarTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:backgroundSplit">@color/ptv_green</item>
         <item name="android:backgroundStacked">@color/ptv_green</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 </resources>
