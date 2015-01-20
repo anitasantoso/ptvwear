@@ -26,11 +26,11 @@ import de.greenrobot.event.EventBus;
 @EActivity(R.layout.activity_timetable)
 public class TimetableActivity extends ActionBarActivity {
 
-    @ViewById(R.id.time_tv)
-    TextView timeTextView;
-
-    @ViewById(R.id.desc_tv)
-    TextView descTextView;
+//    @ViewById(R.id.time_tv)
+//    TextView timeTextView;
+//
+//    @ViewById(R.id.desc_tv)
+//    TextView descTextView;
 
     @ViewById(R.id.circular_progress_bar)
     CircularProgressBar progressBar;
@@ -79,8 +79,8 @@ public class TimetableActivity extends ActionBarActivity {
     }
 
     private void setNextDeparture(Departure dep) {
-        timeTextView.setText(DateUtil.formatToTime(dep.getTime()));
-        descTextView.setText(String.format("(in %d mins)", DateUtil.getMinsToNow(dep.getTime())));
+        progressBar.setTitle(DateUtil.formatToTime(dep.getTime()));
+        progressBar.setSubTitle(String.format("(in %d mins)", DateUtil.getMinsToNow(dep.getTime())));
     }
 
     public void onDestroy() {

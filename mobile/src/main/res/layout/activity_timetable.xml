@@ -6,52 +6,22 @@
     tools:context="as.com.au.ptvwear.TimetableActivity"
     android:background="@color/black_70_fill">
 
-    <FrameLayout
+    <com.lylc.widget.circularprogressbar.example.CircularProgressBar
+        android:id="@+id/circular_progress_bar"
+        style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_alignParentTop="true"
+        android:layout_margin="30dp"
+        app:progressColor="@color/ptv_green"
+        app:backgroundColor="@color/ptv_gray"
         android:layout_centerHorizontal="true"
-        android:id="@+id/main_container"
-        android:layout_margin="40dp"
-        >
-
-        <com.lylc.widget.circularprogressbar.example.CircularProgressBar
-            android:id="@+id/circular_progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="110dip"
-            android:layout_height="110dip"
-            android:layout_marginTop="10dip"
-            app:prgBarTitle="00:00"
-            app:prgBarSubtitle="Loading..." />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:id="@+id/time_tv"
-                android:textSize="40sp"
-                android:text="00:00"
-                android:textColor="@color/ptv_gray" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/ptv_gray"
-                android:layout_below="@id/time_tv"
-                android:textSize="20sp"
-                android:id="@+id/desc_tv"
-                android:text="Loading..." />
-        </RelativeLayout>
-    </FrameLayout>
+        android:layout_alignParentTop="true"
+        app:prgBarTitle="00:00"
+        app:prgBarSubtitle="Loading..." />
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_container"
+        android:layout_below="@id/circular_progress_bar"
         android:id="@+id/timetable_list_view" />
 </RelativeLayout>
