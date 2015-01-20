@@ -115,11 +115,11 @@ public class CircularProgressBar extends ProgressBar{
 			mSubtitlePaint.setColor(Color.parseColor(color));
 
 
-		String t = a.getString(R.styleable.CircularProgressBar_title);
+		String t = a.getString(R.styleable.CircularProgressBar_prgBarTitle);
 		if(t!=null)
 			mTitle = t;
 
-		t = a.getString(R.styleable.CircularProgressBar_subtitle);
+		t = a.getString(R.styleable.CircularProgressBar_prgBarSubtitle);
 		if(t!=null)
 			mSubTitle = t;
 

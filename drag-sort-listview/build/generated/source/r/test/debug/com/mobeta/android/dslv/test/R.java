@@ -168,8 +168,8 @@ containing a value of this type.
         public static final int clickRemove=0x7f020000;
         public static final int flingRemove=0x7f020001;
         public static final int onDown=0x7f020002;
-        public static final int onLongPress=0x7f020004;
-        public static final int onMove=0x7f020003;
+        public static final int onLongPress=0x7f020003;
+        public static final int onMove=0x7f020004;
     }
     public static final class styleable {
         /** Attributes that can be used with a DragSortListView.

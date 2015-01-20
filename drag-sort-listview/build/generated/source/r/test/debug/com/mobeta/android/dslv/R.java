@@ -31,8 +31,8 @@ public final class R {
 		public static final int clickRemove = 0x7f020000;
 		public static final int flingRemove = 0x7f020001;
 		public static final int onDown = 0x7f020002;
-		public static final int onLongPress = 0x7f020004;
-		public static final int onMove = 0x7f020003;
+		public static final int onLongPress = 0x7f020003;
+		public static final int onMove = 0x7f020004;
 	}
 	public static final class styleable {
 		public static final int[] DragSortListView = { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d, 0x7f01000e, 0x7f01000f, 0x7f010010, 0x7f010011 };

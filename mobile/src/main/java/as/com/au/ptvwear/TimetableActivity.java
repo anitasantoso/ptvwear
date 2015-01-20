@@ -11,6 +11,7 @@ import com.googlecode.androidannotations.annotations.AfterInject;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.lylc.widget.circularprogressbar.example.CircularProgressBar;
 
 import java.util.List;
 
@@ -30,6 +31,9 @@ public class TimetableActivity extends ActionBarActivity {
 
     @ViewById(R.id.desc_tv)
     TextView descTextView;
+
+    @ViewById(R.id.circular_progress_bar)
+    CircularProgressBar progressBar;
 
     @ViewById(R.id.timetable_list_view)
     ListView timetableListView;
@@ -82,6 +86,26 @@ public class TimetableActivity extends ActionBarActivity {
     public void onDestroy() {
         super.onDestroy();
         //EventBus.getDefault().unregister(this);
+    }
+
+    public void onResume() {
+        super.onResume();
+        progressBar.animateProgressTo(0, 100, new CircularProgressBar.ProgressAnimationListener() {
+
+            @Override
+            public void onAnimationStart() {
+            }
+
+            @Override
+            public void onAnimationProgress(int progress) {
+                progressBar.setTitle(progress + "%");
+            }
+
+            @Override
+            public void onAnimationFinish() {
+                progressBar.setSubTitle("done");
+            }
+        });
     }
 
     class TimetableListAdapter extends BaseAdapter {

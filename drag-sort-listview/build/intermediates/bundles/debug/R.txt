@@ -19,8 +19,8 @@ int attr use_default_controller 0x7f010011
 int id clickRemove 0x7f020000
 int id flingRemove 0x7f020001
 int id onDown 0x7f020002
-int id onLongPress 0x7f020004
-int id onMove 0x7f020003
+int id onLongPress 0x7f020003
+int id onMove 0x7f020004
 int[] styleable DragSortListView { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d, 0x7f01000e, 0x7f01000f, 0x7f010010, 0x7f010011 }
 int styleable DragSortListView_click_remove_id 16
 int styleable DragSortListView_collapsed_height 0

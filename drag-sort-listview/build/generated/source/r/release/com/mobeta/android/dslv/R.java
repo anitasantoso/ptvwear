@@ -168,8 +168,8 @@ containing a value of this type.
         public static int clickRemove=0x7f020000;
         public static int flingRemove=0x7f020001;
         public static int onDown=0x7f020002;
-        public static int onLongPress=0x7f020004;
-        public static int onMove=0x7f020003;
+        public static int onLongPress=0x7f020003;
+        public static int onMove=0x7f020004;
     }
     public static final class styleable {
         /** Attributes that can be used with a DragSortListView.
@@ -236,7 +236,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:click_remove_id
         */
-        public static final int DragSortListView_click_remove_id = 16;
+        public static int DragSortListView_click_remove_id = 16;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#collapsed_height}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -252,7 +252,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:collapsed_height
         */
-        public static final int DragSortListView_collapsed_height = 0;
+        public static int DragSortListView_collapsed_height = 0;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#drag_enabled}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -266,7 +266,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:drag_enabled
         */
-        public static final int DragSortListView_drag_enabled = 10;
+        public static int DragSortListView_drag_enabled = 10;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#drag_handle_id}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -280,7 +280,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:drag_handle_id
         */
-        public static final int DragSortListView_drag_handle_id = 14;
+        public static int DragSortListView_drag_handle_id = 14;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#drag_scroll_start}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -294,7 +294,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:drag_scroll_start
         */
-        public static final int DragSortListView_drag_scroll_start = 1;
+        public static int DragSortListView_drag_scroll_start = 1;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#drag_start_mode}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -312,7 +312,7 @@ containing a value of this type.
 </table>
           @attr name com.mobeta.android.dslv:drag_start_mode
         */
-        public static final int DragSortListView_drag_start_mode = 13;
+        public static int DragSortListView_drag_start_mode = 13;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#drop_animation_duration}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -326,7 +326,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:drop_animation_duration
         */
-        public static final int DragSortListView_drop_animation_duration = 9;
+        public static int DragSortListView_drop_animation_duration = 9;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#fling_handle_id}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -340,7 +340,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:fling_handle_id
         */
-        public static final int DragSortListView_fling_handle_id = 15;
+        public static int DragSortListView_fling_handle_id = 15;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#float_alpha}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -354,7 +354,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:float_alpha
         */
-        public static final int DragSortListView_float_alpha = 6;
+        public static int DragSortListView_float_alpha = 6;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#float_background_color}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -369,7 +369,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:float_background_color
         */
-        public static final int DragSortListView_float_background_color = 3;
+        public static int DragSortListView_float_background_color = 3;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#max_drag_scroll_speed}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -383,7 +383,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:max_drag_scroll_speed
         */
-        public static final int DragSortListView_max_drag_scroll_speed = 2;
+        public static int DragSortListView_max_drag_scroll_speed = 2;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#remove_animation_duration}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -397,7 +397,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:remove_animation_duration
         */
-        public static final int DragSortListView_remove_animation_duration = 8;
+        public static int DragSortListView_remove_animation_duration = 8;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#remove_enabled}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -411,7 +411,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:remove_enabled
         */
-        public static final int DragSortListView_remove_enabled = 12;
+        public static int DragSortListView_remove_enabled = 12;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#remove_mode}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -428,7 +428,7 @@ containing a value of this type.
 </table>
           @attr name com.mobeta.android.dslv:remove_mode
         */
-        public static final int DragSortListView_remove_mode = 4;
+        public static int DragSortListView_remove_mode = 4;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#slide_shuffle_speed}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -442,7 +442,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:slide_shuffle_speed
         */
-        public static final int DragSortListView_slide_shuffle_speed = 7;
+        public static int DragSortListView_slide_shuffle_speed = 7;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#sort_enabled}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -456,7 +456,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:sort_enabled
         */
-        public static final int DragSortListView_sort_enabled = 11;
+        public static int DragSortListView_sort_enabled = 11;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#track_drag_sort}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -470,7 +470,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:track_drag_sort
         */
-        public static final int DragSortListView_track_drag_sort = 5;
+        public static int DragSortListView_track_drag_sort = 5;
         /**
           <p>This symbol is the offset where the {@link com.mobeta.android.dslv.R.attr#use_default_controller}
           attribute's value can be found in the {@link #DragSortListView} array.
@@ -484,6 +484,6 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.mobeta.android.dslv:use_default_controller
         */
-        public static final int DragSortListView_use_default_controller = 17;
+        public static int DragSortListView_use_default_controller = 17;
     };
 }
