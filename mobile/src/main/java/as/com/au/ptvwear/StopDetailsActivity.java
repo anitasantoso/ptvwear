@@ -11,8 +11,8 @@ import java.util.List;
 import as.com.au.common.model.Departure;
 import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.adapter.LinesListAdapter;
-import as.com.au.ptvwear.service.NetworkService;
-import as.com.au.ptvwear.service.ResponseHandler;
+import as.com.au.ptvwear.network.NetworkService;
+import as.com.au.ptvwear.network.ResponseHandler;
 import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_stop_details)

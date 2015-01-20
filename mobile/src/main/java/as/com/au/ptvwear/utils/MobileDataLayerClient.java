@@ -16,8 +16,8 @@ import as.com.au.common.DataLayerClient;
 import as.com.au.common.JSONSerializer;
 import as.com.au.common.model.Departure;
 import as.com.au.common.model.FaveStop;
-import as.com.au.ptvwear.service.NetworkService;
-import as.com.au.ptvwear.service.ResponseHandler;
+import as.com.au.ptvwear.network.NetworkService;
+import as.com.au.ptvwear.network.ResponseHandler;
 
 /**
  * Created by Anita on 19/01/2015.

@@ -21,8 +21,8 @@ import java.util.List;
 import as.com.au.common.model.FaveStop;
 import as.com.au.common.model.Stop;
 import as.com.au.ptvwear.adapter.FaveStopsListAdapter;
-import as.com.au.ptvwear.service.NetworkService;
-import as.com.au.ptvwear.service.ResponseHandler;
+import as.com.au.ptvwear.network.NetworkService;
+import as.com.au.ptvwear.network.ResponseHandler;
 import as.com.au.ptvwear.utils.AlertUtils;
 import as.com.au.ptvwear.utils.FaveMgr;
 import de.greenrobot.event.EventBus;
@@ -46,6 +46,9 @@ public class MainActivity extends ActionBarActivity implements FaveStopsListAdap
 
     @AfterViews
     void initViews() {
+
+        // integrate google adword
+        // https://developers.google.com/mobile-ads-sdk/docs/adx/android/quick-start#creating_a_new_project
 
         getSupportActionBar().setHomeButtonEnabled(true);
 

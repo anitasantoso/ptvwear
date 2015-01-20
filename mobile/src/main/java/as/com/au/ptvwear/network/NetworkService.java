@@ -1,4 +1,4 @@
-package as.com.au.ptvwear.service;
+package as.com.au.ptvwear.network;
 
 import android.os.Looper;
 import android.util.Log;

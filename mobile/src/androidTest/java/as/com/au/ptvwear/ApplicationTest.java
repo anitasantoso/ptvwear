@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import as.com.au.common.model.Departure;
 import as.com.au.common.model.Stop;
-import as.com.au.ptvwear.service.NetworkService;
-import as.com.au.ptvwear.service.ResponseHandler;
+import as.com.au.ptvwear.network.NetworkService;
+import as.com.au.ptvwear.network.ResponseHandler;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>

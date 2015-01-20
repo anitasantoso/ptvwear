@@ -5,4 +5,5 @@
     <color name="ptv_gray">#3C3E41</color>
     <color name="light_grey">#CBCBCB</color>
     <color name="black_50_fill">#80000000</color>
+    <color name="black_70_fill">#B3000000</color>
 </resources>

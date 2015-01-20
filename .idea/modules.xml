@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CircularProgressBar/CircularProgressBar.iml" filepath="$PROJECT_DIR$/CircularProgressBar/CircularProgressBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/PTVWear.iml" filepath="$PROJECT_DIR$/PTVWear.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/drag-sort-listview/drag-sort-listview.iml" filepath="$PROJECT_DIR$/drag-sort-listview/drag-sort-listview.iml" />

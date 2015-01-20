@@ -1,0 +1,2 @@
+/Users/Anita/Downloads/circular_progress_bar_copy/CircularProgressBarExample/build/intermediates/classes/debug
+/Users/Anita/Downloads/circular_progress_bar_copy/CircularProgressBarExample/build/intermediates/pre-dexed/debug/android-support-v4-54f89fdf1ad22d03ee8e63969d2f4bf91916b138.jar

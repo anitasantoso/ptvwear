@@ -1,4 +1,4 @@
-package as.com.au.ptvwear.service;
+package as.com.au.ptvwear.network;
 
 /**
  * Created by Anita on 16/01/2015.
